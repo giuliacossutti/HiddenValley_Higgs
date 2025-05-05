@@ -1,0 +1,21 @@
+# 50K test events to produce Higgs boson and HiddenValley jets with Reclustered jet pTmin = 40 GeV
+
+executable = /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250505_Task18/50K_ReclpTmin40.sh
+
+getenv=True
+
+request_cpus = 1
+request_memory = 2048
+request_disk = 10000000
+
+log = /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_ReclpTmin40_job.log
+output = /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_ReclpTmin40_job.out
+error = /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_ReclpTmin40_job.err
+
+notification = complete
+notify_user = giulia.cossutti@cern.ch
+
+should_transfer_files = Yes
+when_to_transfer_output = ON_EXIT
+
+queue
