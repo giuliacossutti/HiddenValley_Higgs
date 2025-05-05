@@ -1,0 +1,41 @@
+Author: Giulia Cossutti
+Date: 5th May 2025
+Task: Task18
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+100_HiggsTest.sh
+100_HiggsTest.sub
+50K_Higgs.sh
+50K_Higgs.sub
+
+Description:
+- Simulation of test events of Higgs production (in association with Z0) and decay into Emerging Dark Jets.
+
+Pythia8 card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/Higgs_EJ.cmnd
+
+Delphes card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering.tcl
+
+Data file:
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/100_HiggsTest.root
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_Higgs.root
+
+Log file:
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/100_HiggsTest.log
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_Higgs.log
+
+Condor output files:
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/100_HiggsTest_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_Higgs_job.out (.log, .err)
+
+Analysis file:
+
+Plot files:
+
+Plots:
