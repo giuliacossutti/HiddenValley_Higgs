@@ -14,15 +14,21 @@ Ht-condor files:
 50K_Higgs.sub
 50K_ReclpTmin40.sh
 50K_ReclpTmin40.sub
+50K_bbbar.sh
+50K_bbbar.sub
 
 Description:
 - Simulation of test events of Higgs production (in association with Z0) and decay into Emerging Dark Jets.
   100_HiggsTest : 100 events to test the basic card
   50K_Higgs : 50K events with the same Reclustering delphes card as EJ_reproduction
   50K_ReclpTmin40 : 50K events with Reclustered jet pTmin = 40 GeV in delphes card
+  50K_bbbar : 50K events with Reclustered jet pTmin = 40 GeV in delphes card and dark matter decay to b bbar
 
+- General plots with Reclustering.C
+ 
 Pythia8 card file:
 /gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/Higgs_EJ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/Higgs_EJ_bbbar.cmnd
 
 Delphes card file:
 /gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering.tcl
@@ -32,19 +38,35 @@ Data file:
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/100_HiggsTest.root
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_Higgs.root
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_ReclpTmin40.root
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_bbbar.root
 
 Log file:
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/100_HiggsTest.log
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_Higgs.log
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_ReclpTmin40.log
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_bbbar.log
 
 Condor output files:
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/100_HiggsTest_job.out (.log, .err)
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_Higgs_job.out (.log, .err)
 /gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_ReclpTmin40_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250505_Task18/50K_bbbar_job.out (.log, .err)
 
 Analysis file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250505_Task18/Reclustering.C
+
+***
+All files ending with *_Norm.* contain the same normalized histograms as those ending in *.*
+***
 
 Plot files:
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250505_Task18/plots.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250505_Task18/*.pdf
 
 Plots:
+- Njets.pdf : Number of small and large jets passing selection criteria and constituents of small and large jets
+- Invmass.pdf : Invariant mass of first 2 and 4 small jets, first 2 large jets
+- DeltaR.pdf : DeltaR between leading and subleading small and large jets, and for events with exactly 2 large jets
+- DeltaEta.pdf : DeltaEta between leading and subleading small and large jets, and for events with exactly 2 large jets
+- DeltaPhi.pdf : DeltaPhi between leading and subleading small and large jets, and for events with exactly 2 large jets
+- JetPT.pdf : jet pT of all, leading, subleading, sum of first 2 small and large, sum of first 4 small

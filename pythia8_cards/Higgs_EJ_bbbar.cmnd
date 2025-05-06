@@ -77,26 +77,20 @@ HiggsSM:ffbar2HZ = on                             ! Turn on scattering f fbar ->
 25:offIfAny 1 2 3 4 5 6 -1 -2 -3 -4 -5 -6 7 8 9 10 11 12 13 14 15 16 -7 -8 -9 -10 -11 -12 -13 -14 -15 -16  ! H0 may not decay in SM quarks or leptons
 25:offIfAny 21 22 23 24 -24                       ! H0 may not decay in SM g, gamma, Z or W
 25:onIfAny 4900101 -4900101                       ! H0 may decay in qv1 and qv1bar
-!25:onIfAny 23                                     ! H0 may decay in Z0 products
 
-25:oneChannel 1 1.0 102 4900101 -4900101          ! H -> qv1 qv1bar decay with 100% branching ratio
-
-!25:oneChannel 1 0.999 102 4900101 -4900101        ! H0 -> qv1 qv1bar decay with 99.9% branching ratio
-!25:addChannel 1 0.001 102 23 23                   ! H0 -> Z0 Z0 decay with 0.1 % branching ratio
+25:oneChannel 1 1.0 102 4900101 -4900101            ! H -> qv1 qv1bar decay with 100% branching ratio
 
 
 # Diagonal dark meson decay
 
-4900111:0:all on 1.0 102 1 -1                     ! pivDiag -> d dbar
-4900113:0:all on 0.999 102 4900111 4900111        ! rhovDiag -> pivDiag pivDiagbar with 99.9% branching ratio
-4900113:addchannel on 0.001 102 1 -1              ! rhovDiag -> d dbar with 0.1% branching ratio
+4900111:0:all on 1.0 102 5 -5                     ! pivDiag -> b bbar
+4900113:0:all on 1.0 102 4900111 4900111          ! rhovDiag -> pivDiag pivDiagbar with 100% branching ratio
 
 
 # Off-diagonal dark meson decay
 
-4900211:oneChannel on 1.0 91 1 -1                 ! pivUp -> d dbar
-4900213:oneChannel on 0.999 102 4900211 4900211   ! rhovUp -> pivUp pivUpbar with 99.9% branching ratio
-4900213:addchannel on 0.001 102 1 -1              ! rhovUp -> d dbar with 0.1% branching ratio
+4900211:oneChannel on 1.0 91 5 -5                 ! pivUp -> b bbar
+4900213:oneChannel on 1.0 102 4900211 4900211     ! rhovUp -> pivUp pivUpbar with 100% branching ratio
 
 
 # Dark QCD running coupling
