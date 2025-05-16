@@ -1,20 +1,15 @@
 /*
 Author: Giulia Cossutti
 
+Test of manual double-counting removal for large jets
+
 Macro to plot number of jets with R=0.4 and reclustered jets with R=1.0
 Macro to plot Invariant Mass of jets with R=0.4 and reclustered jets with R=1.0
 Macro to plot DeltaR, DeltaEta, DeltaPhi between jets with R=0.4 and reclustered jets with R=1.0
 Macro to plot Jet PT (various combinations)
 
-Use of a pre-selection for events
-
 From inside the /gfsvol01/atlas/giuliac/HiggsTutorial/MG5_aMC_v3_5_6/Delphes directory run with
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250513_Task19/Reclustering_Presel.C'("/gfsvol01/atlas/giuliac/condor/20250513_Task19/50K_signal_EJ.root","signal_EJ",kTRUE)'
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250513_Task19/Reclustering_Presel.C'("/gfsvol01/atlas/giuliac/condor/20250513_Task19/50K_bkg_Zjets_q.root","bkg_Zjets_q",kTRUE)'
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250513_Task19/Reclustering_Presel.C'("/gfsvol01/atlas/giuliac/condor/20250513_Task19/50K_bkg_Zjets_g.root","bkg_Zjets_g",kTRUE)'
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250513_Task19/Reclustering_Presel.C'("/gfsvol01/atlas/giuliac/condor/20250513_Task19/50K_bkg_Zjets_gamma.root","bkg_Zjets_gamma",kTRUE)'
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250513_Task19/Reclustering_Presel.C'("/gfsvol01/atlas/giuliac/condor/20250513_Task19/50K_bkg_ZZ.root","bkg_ZZ",kTRUE)'
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250513_Task19/Reclustering_Presel.C'("/gfsvol01/atlas/giuliac/condor/20250513_Task19/50K_bkg_HZ_SM.root","bkg_HZ_SM",kTRUE)'
+root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250513_Task19/ReclusteringDC.C'("/gfsvol01/atlas/giuliac/condor/20250513_Task19/50K_signal_EJ.root","signal_EJ",kTRUE)'
 */
 
 #ifdef __CLING__
@@ -51,6 +46,16 @@ void CustomizeLeg(TLegend* legend){
   gStyle->SetLegendTextSize(0.03);
   legend->SetBorderSize(0);
   legend->SetEntrySeparation(0.01);
+}
+//===============================
+// Function to compute DeltaR between an electron and a jet
+Double_t DeltaR(Electron* el, Jet* jet){
+ return sqrt( pow(el->Eta - jet->Eta,2) + pow(el->Phi - jet->Phi,2) );
+}
+//===============================
+// Function to compute DeltaR between a muon and a jet
+Double_t DeltaR(Muon* mu, Jet* jet){
+ return sqrt( pow(mu->Eta - jet->Eta,2) + pow(mu->Phi - jet->Phi,2) );
 }
 //===============================
 // Function to compute DeltaR between 2 jets
@@ -120,26 +125,16 @@ void LoopOverConstituents(Jet* jet, TString string){
 //---------- END FUNCTIONS -------------------
 
 
-void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm=kTRUE)
+void ReclusteringDC(const char *inputFile, const char * outFile,Bool_t Norm=kFALSE)
 {
-  //Preselection on Events:
-  // - At least 2 small jets
-  // - At least n_btagged_min b-tagged small jets
-  // - 2 charged leptons with same flavour, opposite charge, | Invmass - mZ | < tolerance, ZpT > 20 GeV
+  // No Event selection or Small and Large Jet definition: 
 
-  // Counter of events passing the preselection
-  Int_t NofEv = 0;
-
-  // Minimum number of small and btagged small jets
-  Int_t n_small_min = 2;
-  Int_t n_btagged_min = 0;
-
-  // Tolerance on Invariant mass near Z mass
-  Double_t tolerance = 10.;
+  // Remove double-counting of large jets
+  Bool_t doublecount = kFALSE;
 
   // Output name:
   TString outfolder;
-  outfolder.Form("/gfsvol01/atlas/giuliac/plots_and_outputs/20250513_Task19/%s_Presel_bsmallmin%d_smallmin%d_",outFile, n_btagged_min, n_small_min);
+  outfolder.Form("/gfsvol01/atlas/giuliac/plots_and_outputs/20250513_Task19/%s_DC_",outFile);
 
   // Normalisation of histograms
   Bool_t NjetsNorm = Norm;
@@ -188,14 +183,13 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
 
   // Book histograms
   TH1F *Njets_small = new TH1F("number_of_jets_with_R0.4", "", 30, -0.5, 29.5);
-  TH1F *Nbjets_small = new TH1F("number_of_btagged_jets_with_R0.4", "", 30, -0.5, 29.5);
   TH1F *Njets_large = new TH1F("number_of_reclustered_jets_with_R1.0", "", 30, -0.5, 29.5);
   TH1F *Njets_in_large = new TH1F("number_of_constituents_of_leading_and_subleading_jets_with_R1.0", "", 30, -0.5, 29.5);
   TH1F *Njets_in_small = new TH1F("number_of_constituents_of_leading_and_subleading_jets_with_R0.4", "", 30, -0.5, 29.5);
 
-  TH1F *Invmass_2small = new TH1F("Invariant_mass_of_Leading_and_Subleading_small_jets", "", 100, 0.0, 1500.0);
-  TH1F *Invmass_4small = new TH1F("Invariant_mass_of_first four_small_jets", "", 100, 0.0, 1500.0);
-  TH1F *Invmass_2large = new TH1F("Invariant_mass_of_Leading_and_Subleading_large_jets", "", 100, 0.0, 1500.0);
+  TH1F *Invmass_2small = new TH1F("Invariant_mass_of_Leading_and_Subleading_small_jets", "", 100, 0.0, 2500.0);
+  TH1F *Invmass_4small = new TH1F("Invariant_mass_of_first four_small_jets", "", 100, 0.0, 2500.0);
+  TH1F *Invmass_2large = new TH1F("Invariant_mass_of_Leading_and_Subleading_large_jets", "", 100, 0.0, 2500.0);
 
   TH1F *DeltaR_large = new TH1F("DeltaR_between_leading_and_subleading_jets_with_R1.0", "", 100, 0., 10.);
   TH1F *DeltaR_large2 = new TH1F("DeltaR_between_leading_and_subleading_jets_with_R1.0_if_exactly_2_jets", "", 100, 0., 10.);
@@ -209,7 +203,7 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
   TH1F *DeltaPhi_large2 = new TH1F("DeltaPhi_between_leading_and_subleading_jets_with_R1.0_if_exactly_2_jets", "", 240, -8., 16.);
   TH1F *DeltaPhi_small = new TH1F("DeltaPhi_between_leading_and_subleading_jets_with_R0.4", "", 240, -8., 16.);
 
-  Double_t PTend = 800.;
+  Double_t PTend = 1500.;
   TH1F *JetPT_small = new TH1F("all_small_jet_pt", "", PTend/10., 0.0, PTend);
   TH1F *JetPT1_small = new TH1F("leading_small_jet_pt", "", PTend/10., 0.0, PTend);
   TH1F *JetPT2_small = new TH1F("subleading_small_jet_pt", "", PTend/10., 0.0, PTend);
@@ -226,112 +220,6 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
   {
     // Load selected branches with data from specified event
     treeReader->ReadEntry(entry);
-
-    //-------------------- Preselection -------------------------
-
-     // Preselection on number of small and small b-tagged jets
-
-     // Counter of small and small b-tagged jets
-     Int_t n_smalljets = 0;
-     Int_t n_smallbjets = 0;
-     
-     // Loop over all small jets
-     for(Int_t jetentry = 0; jetentry < branchJet->GetEntries(); ++jetentry)
-     {
-       Jet *jet = (Jet*) branchJet->At(jetentry);
-       n_smalljets += 1;
-       if( jet->BTag == 1 ) n_smallbjets += 1;
-     }//end loop over all small jets
-
-     if( (n_smalljets < n_small_min) || (n_smallbjets < n_btagged_min) ) continue;
-
-
-     // Preselection on charged leptons from Z decay
-
-     // Is there acceptable Z -> l+ l- ?
-     Bool_t isZ2l = kFALSE; 
-
-     // Counter of electrons and muons
-     Int_t n_e = 0;
-     Int_t n_mu = 0;
-
-     // Loop over electrons
-     for(Int_t elentry = 0; elentry < branchElectron->GetEntries(); ++elentry)
-     {
-       Electron *el = (Electron*) branchElectron->At(elentry);
-       n_e += 1;
-       if(elentry == 1) break;
-     }//end loop over electrons
-
-     if(n_e == 2){
-       // Candidate electrons from Z decay
-       Electron *el1 = (Electron*) branchElectron->At(0);
-       Electron *el2 = (Electron*) branchElectron->At(1);
-
-       // Different charges
-       if(el1->Charge != el2->Charge){
-
-         // 4-momentum of electrons
-         TLorentzVector *el1P4 = new TLorentzVector(1.0,1.0,1.0,1.0);
-         el1P4->SetPtEtaPhiM(el1->PT,el1->Eta,el1->Phi,0.511e-3);
-         TLorentzVector *el2P4 = new TLorentzVector(1.0,1.0,1.0,1.0);
-         el2P4->SetPtEtaPhiM(el2->PT,el2->Eta,el2->Phi,0.511e-3);
-
-         // Selection on pT of Z
-         if( (*el1P4 + *el2P4).Pt() > 20 ){
-         
-           // Invariant mass near Z mass
-           if( abs( (*el1P4 + *el2P4).M() - 91.188 ) < tolerance ){ 
-
-             isZ2l = kTRUE;
-           }
-         }
-       }
-     }
-
-     if(isZ2l == kFALSE){
-
-       // Loop over muons
-       for(Int_t muentry = 0; muentry < branchMuon->GetEntries(); ++muentry)
-       {
-         Muon *mu = (Muon*) branchMuon->At(muentry);
-         n_mu += 1;
-         if(muentry == 1) break;
-       }//end loop over muons
-
-       if(n_mu == 2){
-         // Candidate electrons from Z decay
-         Muon *mu1 = (Muon*) branchMuon->At(0);
-         Muon *mu2 = (Muon*) branchMuon->At(1);
-
-         // Different charges
-         if(mu1->Charge != mu2->Charge){
-
-           // 4-momentum of muons
-           TLorentzVector *mu1P4 = new TLorentzVector(1.0,1.0,1.0,1.0);
-           mu1P4->SetPtEtaPhiM(mu1->PT,mu1->Eta,mu1->Phi,105.66e-3);
-           TLorentzVector *mu2P4 = new TLorentzVector(1.0,1.0,1.0,1.0);
-           mu2P4->SetPtEtaPhiM(mu2->PT,mu2->Eta,mu2->Phi,105.66e-3);
-
-           // Selection on pT of Z
-           if( (*mu1P4 + *mu2P4).Pt() > 20 ){ 
-       
-             // Invariant mass near Z mass
-             if( abs( (*mu1P4 + *mu2P4).M() - 91.188 ) < tolerance ){
-
-             isZ2l = kTRUE;
-             }
-           }
-         }
-       }
-     }
-
-     if( isZ2l == kFALSE ) continue;
-
-     // Increment counter of events passing the preselection
-     NofEv += 1;
-     
-    //-------------------- End of Preselection -------------------------
 
      // jet counter
      Int_t index_small = 0;
@@ -378,7 +266,31 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
      for(Int_t jetentry = 0; jetentry < branchReclusteredJet->GetEntries(); ++jetentry)
      {
        Jet *jet = (Jet*) branchReclusteredJet->At(jetentry);
+
+       // Remove double-counting from overlap with e or mu
+       
+       doublecount = kFALSE;
+
+       // Loop over electrons
+       for(Int_t elentry = 0; elentry < branchElectron->GetEntries(); ++elentry)
+       {
+         Electron *el = (Electron*) branchElectron->At(elentry);
+         if( DeltaR(el, jet) < 1.0 ) doublecount = kTRUE;
+       }//end loop over electrons
+
+       if(doublecount==kTRUE) continue;
+
+       // Loop over muons
+       for(Int_t muentry = 0; muentry < branchMuon->GetEntries(); ++muentry)
+       {
+         Muon *mu = (Muon*) branchMuon->At(muentry);
+         if( DeltaR(mu, jet) < 1.0 ) doublecount = kTRUE;
+       }//end loop over muons
+
+       if(doublecount==kTRUE) continue;
+
        //if( abs(jet->Eta) >= 1.8 ) continue;
+
        index_large += 1;
 
        // Fill all large jet pT histogram
@@ -402,7 +314,6 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
 
      // Fill number of jets histograms
      Njets_small->Fill(index_small);
-     Nbjets_small->Fill(n_smallbjets);
      Njets_large->Fill(index_large);
 
      // Invariant masses, DeltaR, DeltaPhi, DeltaEta
@@ -465,10 +376,6 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
 
 //-----------------------------------------------------------------
 
-  cout << "Number of Events passing preselection: " << NofEv << endl;
-
-//-----------------------------------------------------------------
-
   // Canva to draw Number of jets histograms
   TCanvas *c1 = new TCanvas("c1", "c1", 0, 0, 800, 600);
   gStyle->SetOptStat(0);
@@ -477,7 +384,6 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
   //Bool_t NjetsNorm = kTRUE;
   //Bool_t NjetsNorm = kFALSE;
   CustomizeHist(Njets_small, kFullSquare, kBlue, NjetsNorm);
-  CustomizeHist(Nbjets_small, kFullSquare, kViolet, NjetsNorm);
   CustomizeHist(Njets_large, kFullCircle, kRed, NjetsNorm);
   CustomizeHist(Njets_in_large, kFullCircle, kGreen, NjetsNorm);
   CustomizeHist(Njets_in_small, kFullSquare, kBlack, NjetsNorm);
@@ -486,43 +392,30 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
   if(NjetsNorm == kTRUE){Njets_large->GetYaxis()->SetTitle("#frac{1}{N} #frac{dN}{dN_{jets or constituents}}");}
   else{Njets_large->GetYaxis()->SetTitle("a.u.");}
 
-  Nbjets_small->GetXaxis()->SetTitle("Number of jets or constituents");
-  if(NjetsNorm == kTRUE){Nbjets_small->GetYaxis()->SetTitle("#frac{1}{N} #frac{dN}{dN_{jets or constituents}}");}
-  else{Nbjets_small->GetYaxis()->SetTitle("a.u.");}
-
   Njets_in_large->GetXaxis()->SetTitle("Number of jets or constituents");
   if(NjetsNorm == kTRUE){Njets_in_large->GetYaxis()->SetTitle("#frac{1}{N} #frac{dN}{dN_{jets or constituents}}");}
   else{Njets_in_large->GetYaxis()->SetTitle("a.u.");}
 
   // Show resulting histograms
   
-  if( ((strcmp(outFile,"ReclpTmin40")==0) || (strcmp(outFile,"bbbar")==0) || (strcmp(outFile,"signal_EJ")==0) || (strcmp(outFile,"bkg_ZZ")==0) || (strcmp(outFile,"bkg_HZ_SM")==0) ) & (n_btagged_min < 2) ){
+  if( (strcmp(outFile,"ReclpTmin40")==0) || (strcmp(outFile,"bbbar")==0) || (strcmp(outFile,"signal_EJ")==0) ){
     Njets_in_large->Draw("E,HIST");
     Njets_large->Draw("E,HIST same");
     Njets_small->Draw("E,HIST same");
-    Nbjets_small->Draw("E,HIST same");
-    Njets_in_small->Draw("E,HIST same");
-  }else if ( (((strcmp(outFile,"signal_EJ")==0) || (strcmp(outFile,"bkg_ZZ")==0) || (strcmp(outFile,"bkg_HZ_SM")==0)) & (n_btagged_min >= 2)) || ((strcmp(outFile,"bkg_Zjets_q")==0) & (n_btagged_min == 1)) ){
-    Nbjets_small->Draw("E,HIST");
-    Njets_large->Draw("E,HIST same");
-    Njets_small->Draw("E,HIST same");
-    Njets_in_large->Draw("E,HIST same");
     Njets_in_small->Draw("E,HIST same");
   }else{
     Njets_large->Draw("E,HIST");
     Njets_small->Draw("E,HIST same");
-    Nbjets_small->Draw("E,HIST same");
     Njets_in_large->Draw("E,HIST same");
     Njets_in_small->Draw("E,HIST same");
   }
 
   // Legend
-  TLegend* legend = new TLegend(0.4599,0.34375,0.807018,0.864583);
+  TLegend* legend = new TLegend(0.4599,0.458333,0.807018,0.864583);
 
   legend->SetHeader(TString::Format("#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, %s}{#splitline{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV}{Number of Jets or Constituents with Reclustering}}",outFile),"C");
 
   legend->AddEntry(Njets_small,"Small (R=0.4)");
-  legend->AddEntry(Nbjets_small,"Small (R=0.4) b-tagged");
   legend->AddEntry(Njets_large,"Large (R=1.0)");
   legend->AddEntry(Njets_in_small,"Constituents of L or Subl Small");
   legend->AddEntry(Njets_in_large,"Constituents of L or Subl Large");
@@ -805,8 +698,6 @@ void Reclustering_Presel(const char *inputFile, const char * outFile,Bool_t Norm
   }
 
   Njets_small->Write("",TObject::kOverwrite);
-  Nbjets_small->Write("",TObject::kOverwrite);
-  Njets_in_small->Write("",TObject::kOverwrite);
   Njets_large->Write("",TObject::kOverwrite);
   Njets_in_large->Write("",TObject::kOverwrite);
 
