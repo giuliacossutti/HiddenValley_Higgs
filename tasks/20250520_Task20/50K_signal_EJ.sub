@@ -1,0 +1,21 @@
+# 50K signal Emerging Jet events to produce Higgs boson and HiddenValley jets with Reclustered jet pTmin = 40 GeV, dark matter decay to b bbar, Z decay to charged leptons
+
+executable = /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250520_Task20/50K_signal_EJ.sh
+
+getenv=True
+
+request_cpus = 1
+request_memory = 2048
+request_disk = 10000000
+
+log = /gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_signal_EJ_job.log
+output = /gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_signal_EJ_job.out
+error = /gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_signal_EJ_job.err
+
+notification = complete
+notify_user = giulia.cossutti@cern.ch
+
+should_transfer_files = Yes
+when_to_transfer_output = ON_EXIT
+
+queue

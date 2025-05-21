@@ -1,0 +1,122 @@
+! This file contains commands to be read in for a Pythia8 run.
+! Lines not beginning with a letter or digit are comments.
+! Names are case-insensitive  -  but spellings-sensitive!
+! Author: Giulia Cossutti
+
+-------------- My settings ----------------
+
+# Settings used in the main program.
+Main:numberOfEvents = 50000          ! number of events to generate
+Main:timesAllowErrors = 500          ! Number of allowed errors before aborting the run
+
+# Settings related to output in init(), next() and stat().
+Init:showProcesses = on            ! list all processes and cross sections
+Init:showChangedSettings = on      ! list changed settings
+Init:showChangedParticleData = on  ! list changed particle data
+Next:numberCount = 1000             ! print message every n events
+Next:numberShowInfo = 1            ! print event information n times
+Next:numberShowProcess = 10         ! print process record n times
+Next:numberShowEvent = 1           ! print event record n times
+
+# Beam parameter settings
+Beams:idA = 2212                   ! first beam, p = 2212, pbar = -2212
+Beams:idB = 2212                   ! second beam, p = 2212, pbar = -2212
+Beams:eCM = 13600.                 ! CM energy of collision
+
+# ATLAS tune
+Tune:pp = 21                        ! ATLAS A14 central tune with NNPDF2.3LO
+
+--------------- EJ analysis settings --------------------
+
+# OVERRIDE STANDARD ATLAS TAU0 LIMIT
+
+ParticleDecays:limitTau0 = off        ! Particles with life ove Tau0 are considered stable
+
+
+# Dark sector general settings
+
+HiddenValley:spinFV = 0               ! Spin of the HV partners of SM fermions (Dv, Uv, ...) = 0
+HiddenValley:Ngauge = 3               ! Number of dark QCD colors
+HiddenValley:alphaFSR = 0.7           ! alpha_dark coupling strength at reference scale LambdaD
+
+
+# Model settings (model D, ctau(piD) = 50 mm)
+
+4900101:m0 = 40                       ! qv mass [GeV]
+4900111:m0 = 20                       ! pivDiag mass [GeV]
+4900113:m0 = 80                       ! rhovDiag mass [GeV]
+4900211:m0 = 20                       ! pivUp mass [GeV]
+4900213:m0 = 80                       ! rhovUp mass [GeV]
+HiddenValley:Lambda = 40              ! LambdaD [GeV]
+HiddenValley:pTminFSR = 44            ! lower pT cutoff for dark shower emission [GeV]
+4900111:tau0 = 50                     ! Diagonal dark pion lifetime c*tau(pivDiag) [mm]
+4900211:tau0 = 50                     ! Off-diagonal dark pion lifetime c*tau(pivUp) [mm]
+
+
+# Non model-dependent settings
+
+PartonLevel:MPI = on                  ! Turn on Multi-Parton Interactions
+PartonLevel:ISR = on                  ! Turn on Initial State Radiation
+
+
+# Emerging Jet event processes
+
+# Higgs boson production and decay
+
+HiggsSM:ffbar2HZ = on                             ! Turn on scattering f fbar -> H0 Z0 via s-channel Z0 exchange
+25:m0 = 125.20                                    ! H0 mass [GeV]
+25:mWidth = 0.0037                                ! Gamma of H0's Breit Wigner [GeV]
+
+!25:tau0 = 1E-11                                  ! H0 lifetime [mm/c]
+!25:isResonance = on                              ! H0 is resonance
+!25:mayDecay = on                                 ! H0 may decay
+!25:0:bRatio = 1                                  ! Branching ratio of H0 0st decay channel
+!25:0:meMode = 102                                ! H0 0st decay channel processing
+
+25:onMode = off                                   ! Disable all H0 decays
+25:offIfAny 1 2 3 4 5 6 -1 -2 -3 -4 -5 -6 7 8 9 10 11 12 13 14 15 16 -7 -8 -9 -10 -11 -12 -13 -14 -15 -16  ! H0 may not decay in SM quarks or leptons
+25:offIfAny 21 22 23 24 -24                       ! H0 may not decay in SM g, gamma, Z or W
+25:onIfAny 4900101 -4900101                       ! H0 may decay in qv1 and qv1bar
+
+25:oneChannel 1 1.0 102 4900101 -4900101            ! H -> qv1 qv1bar decay with 100% branching ratio
+
+
+# Z boson decay
+
+23:offIfAny 1 2 3 4 5 12 14 16                    ! Z0 may not decay in SM quarks and neutrinos (only SM charged leptons are left)
+
+
+# Diagonal dark meson decay
+
+4900111:0:all on 1.0 102 5 -5                     ! pivDiag -> b bbar
+4900113:0:all on 1.0 102 4900111 4900111          ! rhovDiag -> pivDiag pivDiagbar with 100% branching ratio
+
+
+# Off-diagonal dark meson decay
+
+4900211:oneChannel on 1.0 91 5 -5                 ! pivUp -> b bbar
+4900213:oneChannel on 1.0 102 4900211 4900211     ! rhovUp -> pivUp pivUpbar with 100% branching ratio
+
+
+# Dark QCD running coupling
+
+HiddenValley:alphaOrder = 1                       ! alpha_dark running order
+HiddenValley:nFlav = 7                            ! Number of qv flavours
+
+
+# Hidden Valley parton shower settings
+
+HiddenValley:FSR = on                ! Switch on final state shower
+HiddenValley:fragment = on           ! Switch on string fragmentation of HV partonic system
+ProcessLevel:all = on                ! Switch on process generation
+ProcessLevel:resonanceDecays = on    ! Allow resonances to decay
+PartonLevel:all = on                 ! Switch on all parton processes
+PartonLevel:ISR = on                 ! Switch on Initial State Radiation
+HadronLevel:all = on                 ! Switch on hadronization processes
+PhaseSpace:useBreitWigners = on      ! Allow masses to be selected according to Breit-Wigner shapes in 2 -> 2 processes
+
+------------------- SEED -----------------------
+
+! Seed for event generation
+Random:setSeed = on                ! allow to set a seed for pseudo-random event generation
+Random:seed = MYSEED               ! select the pseudo-random sequence for generation (seed)
