@@ -1,0 +1,112 @@
+Author: Giulia Cossutti
+Date: 20th May 2025
+Task: Task20
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+50K_signal_EJ.sh
+50K_signal_EJ.sub
+50K_bkg_Zjets_q.sh
+50K_bkg_Zjets_q.sub
+50K_bkg_Zjets_g.sh
+50K_bkg_Zjets_g.sub
+50K_bkg_Zjets_gamma.sh
+50K_bkg_Zjets_gamma.sub
+50K_bkg_ZZ.sh
+50K_bkg_ZZ.sub
+50K_bkg_HZ_SM.sh
+50K_bkg_HZ_SM.sub
+100_test_xsec_Zjets_q.sh
+100_test_xsec_Zjets_q.sub
+
+Description:
+- Simulation of events of Higgs production (in association with Z0) and decay into Emerging Dark Jets
+  with delphes card avoiding double-counting between leptons and large jets and genjets.
+  50K_signal_EJ : 50K events with dark matter decay to b bbar, Z decays into charged leptons
+  50K_bkg_Zjets_q : 50K events with background Z+jets (jet from quark), Z decays into charged leptons
+  50K_bkg_Zjets_g : 50K events with background Z+jets (jet from gluon), Z decays into charged leptons
+  50K_bkg_Zjets_gamma : 50K events with background Z+jets (jet from gamma), Z decays into charged leptons
+  50K_bkg_ZZ : 50K events with background diboson ZZ, Z decays into charged leptons or b quarks
+  50K_bkg_HZ_SM : 50K events with background Standard Model HZ, Z decays into charged leptons
+
+- Simulation of 100 test Zjets_q events to study PYTHIA's calculation of cross-section
+
+- Pre-selection study:
+  // - At least n_small_min small jets
+  // - At least n_btagged_min b-tagged small jets
+  // - 2 charged leptons with same flavour, opposite charge, | Invmass - mZ | < tolerance, ZpT > 20 GeV
+
+- General plots regarding signal jets and reclustered jets with Reclustering.C
+- General plots regarding signal and background jets and reclustered jets and leptons after a preselection with Reclustering_Presel.C
+ 
+Pythia8 card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/signal_EJ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/bkg_Zjets_q.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/bkg_Zjets_g.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/bkg_Zjets_gamma.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/bkg_ZZ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/bkg_HZ_SM.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/test_xsec_Zjets_q.cmnd
+
+Delphes card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering_Unique.tcl
+
+Data file:
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_signal_EJ.root
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_q.root
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_g.root
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_gamma.root
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_ZZ.root
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_HZ_SM.root
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/100_test_xsec_Zjets_q.root
+
+Log file:
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_signal_EJ.log
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_q.log
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_g.log
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_gamma.log
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_ZZ.log
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_HZ_SM.log
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/100_test_xsec_Zjets_q.log
+
+Condor output files:
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_signal_EJ_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_q_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_g_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_Zjets_gamma_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_ZZ_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/50K_bkg_HZ_SM_job.out (.log, .err)
+/gfsvol01/atlas/giuliac/condor/20250520_Task20/100_test_xsec_Zjets_q.out (.log, .err)
+
+Analysis files:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250520_Task20/Reclustering.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250520_Task20/Reclustering_Presel.C
+
+***
+All files ending with *_Norm.* contain the same normalized histograms as those ending in *.*
+'''
+Files from the various samples are distinguished by a tag: signal_EJ, bkg_Zjets_q, bkg_Zjets_g, bkg_Zjets_gamma, bkg_ZZ, bkg_HZ_SM
+'''
+Files with Presel bsmallmin#1 smallmin#2 are from an event preselection with >= #1 b-tagged small jets and >= #2 small jets
+***
+
+Plot files:
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250520_Task20/*plots.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250520_Task20/*.pdf
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250520_Task20/*NofEv.txt
+
+Plots:
+- Njets.pdf : Number of small, small b-tagged and large jets and constituents of small and large jets
+- Invmass.pdf : Invariant mass of first 2 and 4 small jets, first 2 large jets
+- DeltaR.pdf : DeltaR between leading and subleading small and large jets, and for events with exactly 2 large jets
+- DeltaEta.pdf : DeltaEta between leading and subleading small and large jets, and for events with exactly 2 large jets
+- DeltaPhi.pdf : DeltaPhi between leading and subleading small and large jets, and for events with exactly 2 large jets
+- JetPT.pdf : jet pT of all, leading, subleading, sum of first 2 small and large, sum of first 4 small
+- Lep2PT.pdf : pT of sum of 2 OS-SF leptons taken as Z decay products, with and without preselection on | Invmass - mZ | < 10 GeV (no ZpT < 20 GeV)
+- Lep2mass.pdf : Invariant mass of 2 OS-SF leptons taken as Z decay products (without | Invmass - mZ | < 10 GeV, ZpT < 20 GeV)
+- LepDeltaR.pdf : DeltaR between 2 OS-SF leptons taken as Z decay products passing pre-selection (reco), DeltaR between the e or mu GenLeptons produced by Z decay (truth) 
+- LepEta.pdf : Eta of the e or mu GenLeptons produced by Z decay (truth)
