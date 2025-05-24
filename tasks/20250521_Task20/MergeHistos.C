@@ -366,6 +366,9 @@ void MergeHistos()
   DrawHistos(infiles,"Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"Invariant Mass [GeV/c^{2}]","#events",leglimitsInvmassS,"Invariant Mass of first 2 Small Jets",legentry,"InvMass_small");
   DrawHistosStack(infiles,"Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"Invariant Mass [GeV/c^{2}]","#events",leglimitsInvmassS,"Invariant Mass of first 2 Small Jets",legentry,"InvMass_small");
 
+  std::array<Double_t,4> leglimitsInvmassSA = {0.497494,0.545139,0.763158,0.842014};
+  DrawHistos(infiles,"Invariant_mass_of_leading_and_subleading_small_jets_thesis_abstract",weights,colors,"Invariant Mass [GeV/c^{2}]","#events",leglimitsInvmassSA,"Invariant Mass of first 2 Small Jets",legentry,"InvMass_small_abstract");
+
   std::array<Double_t,4> leglimitsInvmassL = {0.452381,0.543403,0.763158,0.840278};
   DrawHistos(infiles,"Invariant_mass_of_leading_and_subleading_large_jets",weights,colors,"Invariant Mass [GeV/c^{2}]","#events",leglimitsInvmassL,"Invariant Mass of first 2 Large Jets",legentry,"InvMass_large");
   DrawHistosStack(infiles,"Invariant_mass_of_leading_and_subleading_large_jets",weights,colors,"Invariant Mass [GeV/c^{2}]","#events",leglimitsInvmassL,"Invariant Mass of first 2 Large Jets",legentry,"InvMass_large");

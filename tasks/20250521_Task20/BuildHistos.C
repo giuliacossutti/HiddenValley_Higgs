@@ -276,6 +276,7 @@ void BuildHistos(const char *inFile)
   // Book histograms
   // 1D
   TH1F *Invmass_2small = new TH1F("Invariant_mass_of_leading_and_subleading_small_jets", "", 200, 0.0, 800.0);
+  TH1F *Invmass_2small_abstract = new TH1F("Invariant_mass_of_leading_and_subleading_small_jets_thesis_abstract", "", 125, -20.0, 480.0);
   TH1F *Invmass_2large = new TH1F("Invariant_mass_of_leading_and_subleading_large_jets", "", 200, 0.0, 800.0);
 
   TH1F *DeltaR_small = new TH1F("DeltaR_between_leading_and_subleading_small_jets", "", 100, 0., 10.);
@@ -514,6 +515,7 @@ void BuildHistos(const char *inFile)
 
        //Fill 1D histograms
        Invmass_2small->Fill( (*smalljet1P4 + *smalljet2P4).M()  );
+       Invmass_2small_abstract->Fill( (*smalljet1P4 + *smalljet2P4).M()  );
 
        DeltaR_small->Fill( DeltaR(smalljet1, smalljet2) );
        DeltaPhi_small->Fill( abs(DeltaPhi(smalljet1, smalljet2)) );
@@ -589,6 +591,7 @@ void BuildHistos(const char *inFile)
   TFile *f = new TFile(outname,"RECREATE");
 
   Invmass_2small->Write("",TObject::kOverwrite);
+  Invmass_2small_abstract->Write("",TObject::kOverwrite);
   Invmass_2large->Write("",TObject::kOverwrite);
 
   DeltaR_small->Write("",TObject::kOverwrite);
