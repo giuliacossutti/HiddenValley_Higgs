@@ -519,6 +519,8 @@ void MergeHistosArea()
   std::array<Double_t,4> leglimitsIMs_DRs = {0.235589,0.689236,0.546366,0.869792};
   DrawHistos2D(infiles,"IMsmall_vs_DeltaRsmall",weights,"Invariant Mass of first 2 Small Jets [GeV/c^2]","#Delta R between first 2 Small Jets","# events",leglimitsIMs_DRs,"IM vs #Delta R of first 2 Small Jets",legentry,"IMs_DRs",sampledir);
 
+  DrawHistos2D(infiles,"IMsmall_vs_DeltaRsmall",weights,"m_{jj} of first 2 Small Jets [GeV/c^2]","#Delta R between first 2 Small Jets","# events",leglimitsIMs_DRs,"m_{jj} vs #Delta R of first 2 Small Jets",legentry,"IMs_DRs_poster",sampledir);
+
   std::array<Double_t,4> leglimitsIMl_DRl = {0.235589,0.689236,0.546366,0.869792};
   DrawHistos2D(infiles,"IMlarge_vs_DeltaRlarge",weights,"Invariant Mass of first 2 Large Jets [GeV/c^2]","#Delta R between first 2 Large Jets","# events",leglimitsIMl_DRl,"IM vs #Delta R of first 2 Large Jets",legentry,"IMl_DRl",sampledir);
 
