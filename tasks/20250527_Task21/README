@@ -1,0 +1,114 @@
+Author: Giulia Cossutti
+Date: 27th May 2025
+Task: Task21
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+2M_bkg_Zjets_q.sh
+2M_bkg_Zjets_q.sub
+2M_bkg_Zjets_g.sh
+2M_bkg_Zjets_g.sub
+
+Description:
+- Simulation of 2M events for each Z+jets bkg process, output in eos
+- Studies on signal and bkgs by filling histograms of signal and 4 bkg and then stacking and merging.
+  Signal xsection = sum of all bkgs xsections.
+  Signal area = sum of all bkgs areas.
+  All plots in root files to be used for figure of merit and best cuts' determination.
+  A preselection on events is applied:
+  - At least 2 small jets
+  - 2 charged leptons with same flavour, opposite charge, | mll - mZ | < 10 GeV, ZpT > 20 GeV
+
+Pythia8 card file:
+Obtained through
+makepythia8cards.sh
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_q.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_g.cmnd
+as 
+/gfsvol01/atlas/giuliac/condor/20250527_Task21/pythia8_cards/*
+
+Delphes card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering_Unique.tcl
+
+Data file:
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/root_outputs/50K_bkg_Zjets_q_#.root (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/root_outputs/50K_bkg_Zjets_g_#.root (11 <= # <= 50)
+
+Log file:
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_q_#.root (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_g_#.root (11 <= # <= 50)
+
+Condor output files:
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/condor_out/50K_bkg_Zjets_q_job_#.out (.log, .err) (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/condor_out/50K_bkg_Zjets_g_job_#.out (.log, .err) (11 <= # <= 50)
+
+Analysis files:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250527_Task21/BuildHistos.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250527_Task21/MergeHistos.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250527_Task21/MergeHistosArea.C
+
+***
+Files from the various samples are distinguished by a tag: signal_EJ, bkg_Zjets_q, bkg_Zjets_g, bkg_ZZ, bkg_HZ_SM
+'''
+If they contain:
+_sample0 : signal
+_sample1 : bkg_HZ_SM
+_sample2 : bkg_ZZ
+_sample3 : bkg_Zjets_g
+_sample4 : bkg_Zjets_q
+'''
+Two series of 1D plots were made:
+*.pdf : stack of backgrounds + overlapped signal
+*_stack.pdf : stack of backgrounds and signal
+'''
+If they contain:
+area_ : produced by MergeHistosArea.C, Signal area = sum of bkgs areas
+_abstract : used for thesis abstract in PhD applications
+_poster : used for ATLAS Week poster, June 2025
+***
+
+Plot files:
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250527_Task21/*.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250527_Task21/MergedHistos.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250527_Task21/*.pdf
+
+Plots:
+====== 1D plots =========
+- InvMass_small.pdf : Invariant mass of first 2 small jets
+- InvMass_large.pdf : Invariant mass of first 2 large jets
+- DeltaRS.pdf : DeltaR between leading and subleading small jets
+- DeltaPhiS.pdf : DeltaPhi between leading and subleading small jets
+- DeltaRL.pdf : DeltaR between leading and subleading large jets
+- DeltaPhiL.pdf : DeltaPhi between leading and subleading large jets
+- JetPT1S.pdf : pT of leading small jet
+- JetPT2S.pdf : pT of subleading small jet
+- JetPT1L.pdf : pT of leading large jet
+- JetPT2L.pdf : pT of subleading large jet
+- NConst1.pdf : Number of constituents of leading large jet
+- NConst2.pdf : Number of constituents of subleading large jet
+- Nsmall.pdf : Number of small jets
+- Nbsmall.pdf : Number of btagged small jets
+- Nlarge.pdf : Number of large jets
+- PTF1S.pdf : Prompt Track Fraction of leading small jet (DeltaR = 0.5)
+- PTF2S.pdf : Prompt Track Fraction of subleading small jet (DeltaR = 0.5)
+- PTF1bS.pdf : Prompt Track Fraction of leading btagged small jet (DeltaR = 0.5)
+- PTF1L.pdf : Prompt Track Fraction of leading large jet
+- PTF2L.pdf : Prompt Track Fraction of subleading large jet
+- ECF1L.pdf : 2point Energy Correlation Function/pT of leading large jet
+- ECF2L.pdf : 2point Energy Correlation Function/pT of subleading large jet
+- Lep2PT.pdf : pT of sum of 2 leptons reconstructed as products of Z decay
+- LepDeltaR.pdf : DeltaR between 2 leptons reconstructed as products of Z decay
+====== 2D plots =========
+- DeltaRs_DeltaPhis.pdf : DeltaR vs DeltaEta of first 2 small jets
+- DeltaRs_DeltaRl.pdf : DeltaR between first 2 small vs DeltaR between first 2 large jets
+- DeltaPhis_DeltaPhil.pdf : DeltaPhi between first 2 small vs DeltaPhi between first 2 large jets
+- JetPT1s_JetPT2s.pdf : leading vs subleading small jet pT
+- JetPT1l_JetPT2l.pdf : leading vs subleading large jet pT
+- IMs_IMl.pdf : Invariant mass of first 2 small jets vs Invariant mass of first two large jets 
+- IMs_DRs.pdf : Invariant mass vs DeltaR of first 2 small jets
+- IMl_DRl.pdf : Invariant mass vs DeltaR of first 2 large jets
