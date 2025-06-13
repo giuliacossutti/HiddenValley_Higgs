@@ -1,0 +1,119 @@
+Author: Giulia Cossutti
+Date: 12th June 2025
+Task: Task22
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+- In /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250521_Task20/
+500K_signal_EJ.sh
+500K_signal_EJ.sub
+500K_bkg_Zjets_q.sh
+500K_bkg_Zjets_q.sub
+500K_bkg_Zjets_g.sh
+500K_bkg_Zjets_g.sub
+500K_bkg_ZZ.sh
+500K_bkg_ZZ.sub
+500K_bkg_HZ_SM.sh
+500K_bkg_HZ_SM.sub
+- In /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250527_Task21/
+2M_bkg_Zjets_q.sh
+2M_bkg_Zjets_q.sub
+2M_bkg_Zjets_g.sh
+2M_bkg_Zjets_g.sub
+
+Description:
+- Calculation of figures of merit (significance S/sqrt(Bkg) for different cuts) to determine best cuts for cut-based analysis.
+  Tested cuts to exclude Z+jets background.
+
+Pythia8 card file:
+Obtained through
+makepythia8cards.sh
+in
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250521_Task20/
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250527_Task21/
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_signal_EJ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_q.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_g.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_ZZ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_HZ_SM.cmnd
+as 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/pythia8_cards/*
+/gfsvol01/atlas/giuliac/condor/20250527_Task21/pythia8_cards/*
+
+Delphes card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering_Unique.tcl
+
+Data file:
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_signal_EJ_#.root (1 <= # <= 10) 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_bkg_Zjets_q_#.root (1 <= # <= 10) 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_bkg_Zjets_g_#.root (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_bkg_ZZ_#.root (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_bkg_HZ_SM_#.root (1 <= # <= 10)
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/root_outputs/50K_bkg_Zjets_q_#.root (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/root_outputs/50K_bkg_Zjets_g_#.root (11 <= # <= 50)
+
+Log file:
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_signal_EJ_#.log (1 <= # <= 10) 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_Zjets_q_#.log (1 <= # <= 10) 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_Zjets_g_#.log (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_ZZ_#.log (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_HZ_SM_#.log (1 <= # <= 10)
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_q_#.root (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_g_#.root (11 <= # <= 50)
+
+Condor output files:
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_signal_EJ_job_#.out (.log, .err) (1 <= # <= 10) 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_bkg_Zjets_q_job_#.out (.log, .err) (1 <= # <= 10) 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_bkg_Zjets_g_job_#.out (.log, .err) (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_bkg_ZZ_job_#.out (.log, .err) (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_bkg_HZ_SM_job_#.out (.log, .err) (1 <= # <= 10)
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/condor_out/50K_bkg_Zjets_q_job_#.out (.log, .err) (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/condor_out/50K_bkg_Zjets_g_job_#.out (.log, .err) (11 <= # <= 50)
+
+Analysis files:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250612_Task22/FigureOfMerit.C
+
+***
+If filenames end with:
+_signal_bkg_left : plots of fraction of signal and bkg events remaining after the cut
+***
+
+Plot file:
+Source of histograms, from 20250611_Task22:
+- signal_EJ.root : all histos from signal
+- bkg_Zjets_q.root : all histos from Z+(jet from q) background
+- bkg_Zjets_g.root : all histos from Z+(jet from g) background
+Produced through them, used for figure of merit and best cuts' determination:
+- area_Zjets_MergedHistos.root
+Inside this file, names of signal histos end with _0, bkg histos 
+end with _1 (bkg_Zjets_g) and _2 (bkg_Zjets_q).
+
+Plots:
+====== 1D plots =========
+- Zjets_fom_2point_Energy_Correlation_div_pT_of_leading_large_jet.pdf : significance with 1D cuts on ECF2/pT of L large jet
+- Zjets_fom_2point_Energy_Correlation_div_pT_of_subleading_large_jet.pdf : significance with 1D cuts on ECF2/pT of Subl large jet
+- Zjets_fom_2point_Energy_Correlation_div_pT_of_leading_small_jet.pdf : significance with 1D cuts on ECF2/pT of L small jet
+- Zjets_fom_2point_Energy_Correlation_div_pT_of_subleading_small_jet.pdf : significance with 1D cuts on ECF2/pT of Subl small jet
+- Zjets_fom_DeltaR_between_leading_and_subleading_large_jets.pdf : significance with 1D cuts on DeltaR between first 2 large jets
+- Zjets_fom_DeltaR_between_leading_and_subleading_small_jets.pdf : significance with 1D cuts on DeltaR between first 2 small jets
+- Zjets_fom_Invariant_mass_of_all_btagged_small_jets.pdf : significance with 1D cuts on Invmass of all b-tagged jets
+- Zjets_fom_Invariant_mass_of_leading_and_subleading_small_jets.pdf : significance with 1D cuts on Invmass of first 2 small jets
+- Zjets_fom_number_of_btagged_small_jets.pdf : significance with 1D cuts on NbSmall
+- Zjets_fom_number_of_constituents_of_leading_large_jet.pdf : significance with 1D cuts on NConst1
+- Zjets_fom_number_of_large_jets.pdf : significance with 1D cuts on NLarge
+- Zjets_fom_number_of_small_jets.pdf : significance with 1D cuts on NSmall
+- Zjets_fom_Prompt_Track_Fraction_of_leading_btagged_small_jet.pdf : significance with 1D cuts on PTF1bS
+- Zjets_fom_Prompt_Track_Fraction_of_leading_large_jet.pdf : significance with 1D cuts on PTF1L
+- Zjets_fom_Prompt_Track_Fraction_of_subleading_large_jet.pdf : significance with 1D cuts on PTF2L
+- Zjets_fom_Prompt_Track_Fraction_of_leading_small_jet.pdf : significance with 1D cuts on PTF1S
+- Zjets_fom_Prompt_Track_Fraction_of_subleading_small_jet.pdf : significance with 1D cuts on PTF2S
+- Zjets_fom_pt_of_first_two_leptons.pdf : significance with 1D cuts on pT of sum of leptons from Z decay
+- Zjets_highedge_fom_DeltaR_between_first_two_leptons.pdf : significance with 1D right cuts on DeltaR between leptons from Z decay
+- Zjets_lowedge_fom_DeltaR_between_first_two_leptons.pdf : significance with 1D left cuts on DeltaR between leptons from Z decay
+
+Significance, signal, bkg values are in text files Zjets_FOM.txt, with same names as the pdf plots.
