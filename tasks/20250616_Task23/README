@@ -1,0 +1,35 @@
+Author: Giulia Cossutti
+Date: 16th June 2025
+Task: Task23
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+test_showering.sh
+test_showering.sub
+
+Description:
+- Test of PYTHIA8 showering from 100 mc23 events (official ATLAS MonteCarlo) generated with PowHeg
+
+Pythia8 card file:
+Obtained through
+makepythia8card.sh
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/showering_signal_EJ.cmnd
+as 
+/gfsvol01/atlas/giuliac/condor/20250616_Task23/pythia8_cards/test_showering_signal_EJ.cmnd
+
+Delphes card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering_Unique.tcl
+
+Data file:
+/gfsvol01/atlas/giuliac/condor/20250616_Task23/root_outputs/test_showering_signal_EJ.root
+
+Log file:
+/gfsvol01/atlas/giuliac/condor/20250616_Task23/log_outputs/test_showering_signal_EJ.log
+
+Condor output files:
+/gfsvol01/atlas/giuliac/condor/20250616_Task23/condor_out/test_showering_signal_EJ_job_.out (.log, .err)
