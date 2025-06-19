@@ -6,9 +6,10 @@ Bkgs are scaled with pythia's calculated cross-sections or measured cross-sectio
 Signal is scaled to have same area as sum of bkgs.
 Histograms are saved in files.
 Events are divided in categories: A, B.
+Cut1 is applied (number of b-tagged small jets >= 1) for both A and B events.
 
 From inside the /gfsvol01/atlas/giuliac/HiggsTutorial/MG5_aMC_v3_5_6/Delphes directory run with
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/MergeHistosArea_Zjets.C 
+root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/MergeHistosArea_Zjets.C 
 
 */
 
@@ -344,19 +345,19 @@ void MergeHistosArea_Zjets()
   gSystem->Load("libDelphes");
 
   // Import histograms 
-  TString sampledir = "/gfsvol01/atlas/giuliac/plots_and_outputs/20250617_Task23/";
+  TString sampledir = "/gfsvol01/atlas/giuliac/plots_and_outputs/20250619_Task23/";
 
   TString signame = sampledir + "signal_EJ.root";
   TString bkgZqname = sampledir + "bkg_Zjets_q.root";
   TString bkgZgname = sampledir + "bkg_Zjets_g.root";
-  TString bkgZZname = sampledir + "bkg_ZZ.root";
-  TString bkgHZname = sampledir + "bkg_HZ_SM.root";
+  //TString bkgZZname = sampledir + "bkg_ZZ.root";
+  //TString bkgHZname = sampledir + "bkg_HZ_SM.root";
 
   TFile *f_sig = new TFile(signame);
   TFile *f_bkgZq = new TFile(bkgZqname);
   TFile *f_bkgZg = new TFile(bkgZgname);
-  TFile *f_bkgZZ = new TFile(bkgZZname);
-  TFile *f_bkgHZ = new TFile(bkgHZname);
+  //TFile *f_bkgZZ = new TFile(bkgZZname);
+  //TFile *f_bkgHZ = new TFile(bkgHZname);
 
   // Integrated Luminosity [pb^-1] (arbitrary, no real data here)
   Double_t lumi = 100000;
@@ -364,8 +365,8 @@ void MergeHistosArea_Zjets()
   // Cross-section [pb] 
   Double_t xsec_bkgZq = 1.250e4;
   Double_t xsec_bkgZg = 7.759e3;
-  Double_t xsec_bkgZZ = 7.688e-1;
-  Double_t xsec_bkgHZ = 6.455e-2;
+  //Double_t xsec_bkgZZ = 7.688e-1;
+  //Double_t xsec_bkgHZ = 6.455e-2;
   //Double_t xsec_sig = xsec_bkgZq + xsec_bkgZg +xsec_bkgZZ + xsec_bkgHZ;
   Double_t xsec_sig = xsec_bkgZq + xsec_bkgZg;
 
@@ -373,8 +374,8 @@ void MergeHistosArea_Zjets()
   Double_t ntot_sig = 500000;
   Double_t ntot_bkgZq = 2500000;
   Double_t ntot_bkgZg = 2500000;
-  Double_t ntot_bkgZZ = 500000;
-  Double_t ntot_bkgHZ = 500000;
+  //Double_t ntot_bkgZZ = 500000;
+  //Double_t ntot_bkgHZ = 500000;
 
   // Prepare info to draw histos and draw them
   //std::vector<TFile*> infiles = {f_sig,f_bkgHZ,f_bkgZZ,f_bkgZg,f_bkgZq};

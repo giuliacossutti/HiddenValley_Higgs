@@ -1,5 +1,5 @@
 Author: Giulia Cossutti
-Date: 17th June 2025
+Date: 19th June 2025
 Task: Task23
 
 Run obtained with ht-condor
@@ -27,7 +27,6 @@ Ht-condor files:
 
 Description:
 - Studies on signal and bkgs by filling histograms of signal and 4 bkg and then stacking and merging.
-  Signal area = sum of all bkgs areas.
   Signal area = sum of Z+jets bkgs areas.
   All plots in root files to be used for figure of merit and best cuts' determination.
   A preselection on events is applied:
@@ -36,6 +35,11 @@ Description:
   Events are divided in 2 categories:
   - A: 1 Large Jet
   - B: >= 2 Large Jets
+  Selection after Cut1 is applied:
+  - >= 1 Large Jet (to fit in category A or B)
+  - >= 1 b-tagged Small Jets (Cut1)
+- Calculation of figures of merit (significance S/sqrt(Bkg) for different cuts) to determine best cuts for cut-based analysis.
+  Tested second cut to exclude Z+jets background in event cathegory A and B.
 
 Pythia8 card file:
 Obtained through
@@ -84,19 +88,12 @@ Condor output files:
 /eos/infnts/atlas/giuliac/condor/20250527_Task21/condor_out/50K_bkg_Zjets_g_job_#.out (.log, .err) (11 <= # <= 50)
 
 Analysis files:
-/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/BuildHistos.C
-/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/MergeHistosArea.C
-/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/MergeHistosArea_Zjets.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/BuildHistos.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/MergeHistosArea_Zjets.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/FigureOfMerit.C
 
 ***
 Files from the various samples are distinguished by a tag: signal_EJ, bkg_Zjets_q, bkg_Zjets_g, bkg_ZZ, bkg_HZ_SM
-'''
-If area_ contain:
-_sample0 : signal
-_sample1 : bkg_HZ_SM
-_sample2 : bkg_ZZ
-_sample3 : bkg_Zjets_g
-_sample4 : bkg_Zjets_q
 '''
 If area_Zjets_ contain:
 _sample0 : signal
@@ -108,23 +105,46 @@ Two series of 1D plots were made:
 *_stack.pdf : stack of backgrounds and signal
 '''
 If they contain:
-area_ : produced by MergeHistosArea.C, Signal area = sum of bkgs areas
 area_Zjets_ : produced by MergeHistosArea_Zjets.C, Signal area = sum of Z+jets bkgs areas
+'''
+If filenames end with:
+_signal_bkg_left : plots of fraction of signal and bkg events remaining after the cut
 '''
 If they contain:
 A_ : category A
 B_ : category B
+Cut2 : study for the second cut
 ***
 
 Plot files:
-/gfsvol01/atlas/giuliac/plots_and_outputs/20250617_Task23/*.root
-/gfsvol01/atlas/giuliac/plots_and_outputs/20250617_Task23/MergedHistos.root
-/gfsvol01/atlas/giuliac/plots_and_outputs/20250617_Task23/*.pdf
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250619_Task23/*.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250619_Task23/MergedHistos.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250619_Task23/*.pdf
+
+Source of FOM histograms, from 20250619_Task23:
+- signal_EJ.root : all histos from signal
+- bkg_Zjets_q.root : all histos from Z+(jet from q) background
+- bkg_Zjets_g.root : all histos from Z+(jet from g) background
+Produced through them, used for figure of merit and best cuts' determination:
+- area_Zjets_MergedHistos.root
+Inside this file, names of signal histos end with _0, bkg histos 
+end with _1 (bkg_Zjets_g) and _2 (bkg_Zjets_q).
 
 Plots:
+From MergeHistosArea_Zjets.C :
 ====== 1D plots =========
 - DeltaRS.pdf : DeltaR between leading and subleading small jets
 - Nbsmall.pdf : Number of btagged small jets
 - Lep2PT.pdf : pT of sum of 2 leptons reconstructed as products of Z decay
 ====== 2D plots =========
 - Ns_Nbs.pdf : number of small vs b-tagged small jets
+
+From FigureOfMerit.C :
+====== 1D plots =========
+- Zjets_fom_DeltaR_between_leading_and_subleading_small_jets.pdf : significance with 1D cuts on DeltaR between first 2 small jets
+- Zjets_fom_number_of_btagged_small_jets.pdf : significance with 1D cuts on NbSmall
+- Zjets_fom_pt_of_first_two_leptons.pdf : significance with 1D cuts on pT of sum of leptons from Z decay
+====== 2D plots =========
+- Zjets_Rectangular_fom_Nsmall_vs_Nbsmall.pdf : significance with 2D rectangular cuts on number of small and b-tagged small jets
+
+Significance, signal, bkg values are in text files Zjets_FOM.txt, with same names as the pdf plots.

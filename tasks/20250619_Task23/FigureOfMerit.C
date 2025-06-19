@@ -4,10 +4,10 @@ Author: Giulia Cossutti
 Macro to calculate significance and figure of merit of cuts to separate signal from background.
 Bkgs are scaled with pythia's calculated cross-sections,
 signal is scaled with area = sum of Z+jets bkgs areas.
-Histograms have been saved in files in 20250617_Task23.
+Histograms have been saved in files in 20250619_Task23.
 
 From inside the /gfsvol01/atlas/giuliac/HiggsTutorial/MG5_aMC_v3_5_6/Delphes directory run with
-root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250618_Task23/FigureOfMerit.C 
+root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/FigureOfMerit.C 
 
 Pre-selection on events:
 - At least 2 small jets
@@ -16,6 +16,10 @@ Pre-selection on events:
 Categories of events:
 - A: Events with 1 Large Jet
 - B: Events with >=2 Large Jets
+
+Selection:
+- number of Large Jets >= 1 (to fit in cat. A or B)
+- number of b-tagged small jets >=1 (for both A and B events)
 */
 
 //------------------------------------------------------------------------------
@@ -504,12 +508,12 @@ void FigureOfMerit()
 {
 
   // Open histograms' file
-  TString filename = "/gfsvol01/atlas/giuliac/plots_and_outputs/20250617_Task23/area_Zjets_MergedHistos.root";
+  TString filename = "/gfsvol01/atlas/giuliac/plots_and_outputs/20250619_Task23/area_Zjets_MergedHistos.root";
 
   TFile *infile = new TFile(filename);
 
   // Output directory
-  TString outdir = "/gfsvol01/atlas/giuliac/plots_and_outputs/20250618_Task23/Zjets_Cut1_";
+  TString outdir = "/gfsvol01/atlas/giuliac/plots_and_outputs/20250619_Task23/Zjets_Cut2_";
 
   // Number of signal or background samples
   Int_t Nsamples = 3;

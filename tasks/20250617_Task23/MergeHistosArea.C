@@ -5,7 +5,7 @@ Macro to merge histograms for signal and backgrounds.
 Bkgs are scaled with pythia's calculated cross-sections or measured cross-sections, 
 Signal is scaled to have same area as sum of bkgs.
 Histograms are saved in files.
-Events are divided in cathegories: A, B.
+Events are divided in categories: A, B.
 
 From inside the /gfsvol01/atlas/giuliac/HiggsTutorial/MG5_aMC_v3_5_6/Delphes directory run with
 root -l /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/MergeHistosArea.C 
@@ -123,7 +123,7 @@ void DrawHistos(std::vector<TFile*> file,const char *histname,std::vector<Double
   TLegend* legend = new TLegend(leglimits[0],leglimits[1],leglimits[2],leglimits[3]);
 
   TString head;
-  head = TString::Format("#splitline{#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, Cathegory %.1s}{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV, L=100fb^{-1}}}{" + legtitle + "}", histname);
+  head = TString::Format("#splitline{#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, Category %.1s}{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV, L=100fb^{-1}}}{" + legtitle + "}", histname);
 
   legend->SetHeader(head,"C");
 
@@ -221,7 +221,7 @@ void DrawHistosStack(std::vector<TFile*> file,const char *histname,std::vector<D
   TLegend* legend = new TLegend(leglimits[0],leglimits[1],leglimits[2],leglimits[3]);
 
   TString head;
-  head = TString::Format("#splitline{#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, Cathegory %.1s}{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV, L=100fb^{-1}}}{" + legtitle + "}", histname);
+  head = TString::Format("#splitline{#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, Category %.1s}{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV, L=100fb^{-1}}}{" + legtitle + "}", histname);
 
   legend->SetHeader(head,"C");
 
@@ -318,7 +318,7 @@ void DrawHistos2D(std::vector<TFile*> file,const char *histname,std::vector<Doub
     // Legend
     TLegend* legend = new TLegend(leglimits[0],leglimits[1],leglimits[2],leglimits[3]);
 
-    head = TString::Format("#splitline{#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, Cathegory %.1s}{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV, L=100fb^{-1}}}{" + legtitle + "}", histname);
+    head = TString::Format("#splitline{#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, Category %.1s}{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV, L=100fb^{-1}}}{" + legtitle + "}", histname);
 
     legend->SetHeader(head,"C");
     CustomizeLeg(legend);
@@ -397,7 +397,7 @@ void MergeHistosArea()
   // write all scaled histograms on file
   TString outname = sampledir + "MergedHistos.root";
 
-  // Event cathegories
+  // Event categories
   std::vector<TString> cat = {"A_","B_"};
 
   TFile *f = new TFile(outname,"RECREATE");

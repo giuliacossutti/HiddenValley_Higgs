@@ -7,15 +7,19 @@ Macro to fill histograms for signal and backgrounds
 - B: Events with >=2 Large Jets
 
 From inside the /gfsvol01/atlas/giuliac/HiggsTutorial/MG5_aMC_v3_5_6/Delphes directory run with
-root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/BuildHistos.C'("signal_EJ")' &
-root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/BuildHistos.C'("bkg_Zjets_q")' &
-root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/BuildHistos.C'("bkg_Zjets_g")' &
-root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/BuildHistos.C'("bkg_ZZ")' &
-root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250617_Task23/BuildHistos.C'("bkg_HZ_SM")' &
+root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/BuildHistos.C'("signal_EJ")' &
+root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/BuildHistos.C'("bkg_Zjets_q")' &
+root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/BuildHistos.C'("bkg_Zjets_g")' &
+root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/BuildHistos.C'("bkg_ZZ")' &
+root -l -q /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250619_Task23/BuildHistos.C'("bkg_HZ_SM")' &
 
 Pre-selection on events:
 - At least 2 small jets
 - 2 charged leptons with same flavour, opposite charge, | Invmass - mZ | < tolerance = 10 GeV, ZpT > 20 GeV
+
+Selection on events:
+- >= 1 Large Jet (to fit in category A or B)
+- number of b-tagged small jets >= 1 (for both A and B events)
 */
 
 #ifdef __CLING__
@@ -360,8 +364,9 @@ void BuildHistos(const char *inFile)
 
      // Preselection on number of small jets
 
-     // Counter of small
+     // Counter of small and b-tagged small
      Int_t n_smalljets = 0;
+     Int_t n_bsmalljets = 0;
      
      // Loop over all small jets
      for(Int_t jetentry = 0; jetentry < branchJet->GetEntries(); ++jetentry)
@@ -369,11 +374,18 @@ void BuildHistos(const char *inFile)
        Jet *jet = (Jet*) branchJet->At(jetentry);
        //if( abs(jet->Eta) >= 2.5 ) continue;
        n_smalljets += 1;
+       if( jet->BTag == 1 ) n_bsmalljets += 1;
      }//end loop over all small jets
 
      if( (n_smalljets < 2) ) continue;
 
+     //------------------ Selection: CUT1 number of b-tagged Small Jets --------------------
 
+     if( (n_bsmalljets < 1) ) continue;
+
+     //------------------ End of Selection: CUT1 number of b-tagged Small Jets --------------------
+
+     //------------------ Selection: number of Large Jets --------------------
 
      // Count number of large jets to determine category of the event
 
@@ -388,6 +400,9 @@ void BuildHistos(const char *inFile)
        n_largejets += 1;
      }//end loop over all large jets
 
+     if( (n_largejets < 1) ) continue;
+
+     //------------------ End of Selection: number of Large Jets --------------------
 
 
      // Preselection on charged leptons from Z decay
@@ -427,6 +442,8 @@ void BuildHistos(const char *inFile)
            // Invariant mass near Z mass
            if( abs( (*el1P4 + *el2P4).M() - 91.188 ) < tolerance ){ 
 
+             isZ2l = kTRUE;
+
              // Fill histograms about first 2 leptons when Z is tagged
              if(n_largejets == 1){
                A_Lep2PT->Fill( (*el1P4 + *el2P4).Pt() );
@@ -434,7 +451,6 @@ void BuildHistos(const char *inFile)
                B_Lep2PT->Fill( (*el1P4 + *el2P4).Pt() );
              }
  
-             isZ2l = kTRUE;
            }
          }
        }
@@ -470,6 +486,8 @@ void BuildHistos(const char *inFile)
              // Invariant mass near Z mass
              if( abs( (*mu1P4 + *mu2P4).M() - 91.188 ) < tolerance ){
 
+               isZ2l = kTRUE;
+
                // Fill histograms about first 2 leptons when Z is tagged
                if(n_largejets == 1){
                  A_Lep2PT->Fill( (*mu1P4 + *mu2P4).Pt() );
@@ -477,7 +495,6 @@ void BuildHistos(const char *inFile)
                  B_Lep2PT->Fill( (*mu1P4 + *mu2P4).Pt() );
                }
 
-               isZ2l = kTRUE;
              }
            }
          }
@@ -549,7 +566,7 @@ void BuildHistos(const char *inFile)
 //-------------------------------------------------------
   // write all plots on file
   TString outname;
-  outname.Form("/gfsvol01/atlas/giuliac/plots_and_outputs/20250617_Task23/%s.root",inFile);
+  outname.Form("/gfsvol01/atlas/giuliac/plots_and_outputs/20250619_Task23/%s.root",inFile);
 
   TFile *f = new TFile(outname,"RECREATE");
 

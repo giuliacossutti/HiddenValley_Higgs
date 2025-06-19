@@ -27,7 +27,7 @@ Ht-condor files:
 
 Description:
 - Calculation of figures of merit (significance S/sqrt(Bkg) for different cuts) to determine best cuts for cut-based analysis.
-  Tested first cut to exclude Z+jets background in event cathegory A and B.
+  Tested first cut to exclude Z+jets background in event category A and B.
 
 Pythia8 card file:
 Obtained through
@@ -84,8 +84,8 @@ _signal_bkg_left : plots of fraction of signal and bkg events remaining after th
 '''
 If they contain:
 Cut1 : study for the first cut
-A_ : event cathegory A
-B_ : event cathegory B
+A_ : event category A
+B_ : event category B
 ***
 
 Plot file:
