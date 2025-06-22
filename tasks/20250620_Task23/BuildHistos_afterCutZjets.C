@@ -516,7 +516,7 @@ void BuildHistos_afterCutZjets(const char *inFile)
        TLorentzVector *el2P4 = new TLorentzVector(1.0,1.0,1.0,1.0);
        el2P4->SetPtEtaPhiM(el2->PT,el2->Eta,el2->Phi,0.511e-3);
 
-       if( (*el1P4 + *el2P4).Pt() <= 96) continue;
+       if( (n_largejets == 1) & ((*el1P4 + *el2P4).Pt() <= 96) ) continue;
      }
 
      if( isZmu == kTRUE ){
@@ -529,7 +529,7 @@ void BuildHistos_afterCutZjets(const char *inFile)
        TLorentzVector *mu2P4 = new TLorentzVector(1.0,1.0,1.0,1.0);
        mu2P4->SetPtEtaPhiM(mu2->PT,mu2->Eta,mu2->Phi,105.66e-3);
 
-       if( (*mu1P4 + *mu2P4).Pt() <= 96) continue;
+       if( (n_largejets == 1) & ((*mu1P4 + *mu2P4).Pt() <= 96) ) continue;
      }
 
      //------------------ End of Selection: CUT3 pT of sum of 2 leptons from Z decay --------------------
