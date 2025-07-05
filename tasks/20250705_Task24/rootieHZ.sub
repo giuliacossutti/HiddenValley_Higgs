@@ -1,0 +1,21 @@
+# root with condor
+
+executable = /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250705_Task24/rootieHZ.sh
+
+getenv=True
+
+request_cpus=1
+request_memory=2048
+request_disk=1000000
+
+log = /gfsvol01/atlas/giuliac/plots_and_outputs/20250705_Task24/rootieHZ.log
+output = /gfsvol01/atlas/giuliac/plots_and_outputs/20250705_Task24/rootieHZ.out
+error = /gfsvol01/atlas/giuliac/plots_and_outputs/20250705_Task24/rootieHZ.err
+
+notification = complete
+notify_user = giulia.cossutti@cern.ch
+
+should_transfer_files = Yes
+when_to_transfer_output = ON_EXIT
+
+queue
