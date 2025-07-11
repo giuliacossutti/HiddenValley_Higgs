@@ -90,6 +90,7 @@ Two series of 1D plots were made:
 If they contain:
 area_ : produced by MergeHistosArea.C, Signal area = sum of bkgs areas
 CL_ : produced by Chi2_MergeHistos.C, Chi2 vs xsec_signal
+95_ : produced by Chi2_MergeHistos.C, histograms used for CL limits with xsec_sig = 95% CL limit on xsec_sig
 FinalSignalRegion_ : produced by FigureOfMerit.C, plots to decide signal region in PTF1S_PTF2S plane
 ***
 

@@ -53,7 +53,7 @@ void CustomizeLeg(TLegend* legend){
 // Function to draw histograms in a canva and save it in pdf
 // File vector must have signal file first and then all bkg files
 // Signal is overlapped to the stack of backgrounds
-void DrawHistos(std::vector<TFile*> file,const char *histname,std::vector<Double_t> weights,std::vector<Color_t> color,TString XTitle,TString YTitle,std::array<Double_t,4> leglimits,TString legtitle,std::vector<TString> legentry,const char *outname, TString outfolder){
+void DrawHistos(Bool_t area,std::vector<TFile*> file,const char *histname,std::vector<Double_t> weights,std::vector<Color_t> color,TString XTitle,TString YTitle,std::array<Double_t,4> leglimits,TString legtitle,std::vector<TString> legentry,const char *outname, TString outfolder){
 
    // Control size of inputs
    if( !( (file.size() == weights.size()) && (color.size() == legentry.size()) && (file.size() == color.size()) )  ){
@@ -83,21 +83,23 @@ void DrawHistos(std::vector<TFile*> file,const char *histname,std::vector<Double
     }
   }
 
-  // Scale signal to have same area as sum of bkgs
-  Double_t BkgIntegral = 0.;
+  if(area == kTRUE){
+    // Scale signal to have same area as sum of bkgs
+    Double_t BkgIntegral = 0.;
 
-  for(Int_t i = 1; i < hist.size(); ++i){
-    BkgIntegral += hist.at(i)-> Integral();
-  }
+    for(Int_t i = 1; i < hist.size(); ++i){
+      BkgIntegral += hist.at(i)-> Integral();
+    }
 
-  hist.at(0)->Scale( BkgIntegral/hist.at(0)->Integral() );
-  for(Int_t k = 1; k <= hist.at(0)->GetXaxis()->GetNbins(); ++k){
-    hist.at(0)->SetBinError(k, sqrt(hist.at(0)->GetBinContent(k)) );
+    hist.at(0)->Scale( BkgIntegral/hist.at(0)->Integral() );
+    for(Int_t k = 1; k <= hist.at(0)->GetXaxis()->GetNbins(); ++k){
+      hist.at(0)->SetBinError(k, sqrt(hist.at(0)->GetBinContent(k)) );
+    }
   }
 
   // Write on file
   for(Int_t i = 0; i < hist.size(); ++i){
-    hist.at(i)->Write("",TObject::kOverwrite);
+    hist.at(i)->Write("",TObject::kSingleKey);
   }
 
   // Canva to draw histograms
@@ -132,7 +134,7 @@ void DrawHistos(std::vector<TFile*> file,const char *histname,std::vector<Double
   h_stack->GetYaxis()->SetTitle(YTitle);
 
   // Set Range
-  Double_t Max = 5e8;
+  Double_t Max = 5e7;
   Double_t Min = 5e-1;
 
   h_stack->SetMaximum(Max);
@@ -165,7 +167,7 @@ void DrawHistos(std::vector<TFile*> file,const char *histname,std::vector<Double
 // Function to draw histograms in a canva and save it in pdf
 // File vector must have signal file first and then all bkg files
 // Signal is stacked with backgrounds
-void DrawHistosStack(std::vector<TFile*> file,const char *histname,std::vector<Double_t> weights,std::vector<Color_t> color,TString XTitle,TString YTitle,std::array<Double_t,4> leglimits,TString legtitle,std::vector<TString> legentry,const char *outname, TString outfolder){
+void DrawHistosStack(Bool_t area, std::vector<TFile*> file,const char *histname,std::vector<Double_t> weights,std::vector<Color_t> color,TString XTitle,TString YTitle,std::array<Double_t,4> leglimits,TString legtitle,std::vector<TString> legentry,const char *outname, TString outfolder){
 
    // Control size of inputs
    if( !( (file.size() == weights.size()) && (color.size() == legentry.size()) && (file.size() == color.size()) )  ){
@@ -195,16 +197,23 @@ void DrawHistosStack(std::vector<TFile*> file,const char *histname,std::vector<D
     }
   }
 
-  // Scale signal to have same area as sum of bkgs
-  Double_t BkgIntegral = 0.;
+  if(area == kTRUE){
+    // Scale signal to have same area as sum of bkgs
+    Double_t BkgIntegral = 0.;
 
-  for(Int_t i = 1; i < hist.size(); ++i){
-    BkgIntegral += hist.at(i)-> Integral();
+    for(Int_t i = 1; i < hist.size(); ++i){
+      BkgIntegral += hist.at(i)-> Integral();
+    }
+
+    hist.at(0)->Scale( BkgIntegral/hist.at(0)->Integral() );
+    for(Int_t k = 1; k <= hist.at(0)->GetXaxis()->GetNbins(); ++k){
+      hist.at(0)->SetBinError(k, sqrt(hist.at(0)->GetBinContent(k)) );
+    }
   }
 
-  hist.at(0)->Scale( BkgIntegral/hist.at(0)->Integral() );
-  for(Int_t k = 1; k <= hist.at(0)->GetXaxis()->GetNbins(); ++k){
-    hist.at(0)->SetBinError(k, sqrt(hist.at(0)->GetBinContent(k)) );
+  // Write on file
+  for(Int_t i = 0; i < hist.size(); ++i){
+    hist.at(i)->Write("",TObject::kSingleKey);
   }
 
   // Canva to draw histograms
@@ -240,7 +249,7 @@ void DrawHistosStack(std::vector<TFile*> file,const char *histname,std::vector<D
   h_stack->GetYaxis()->SetTitle(YTitle);
 
   // Set Range
-  Double_t Max = 5e8;
+  Double_t Max = 5e7;
   Double_t Min = 5e-1;
 
   h_stack->SetMaximum(Max);
@@ -269,7 +278,7 @@ void DrawHistosStack(std::vector<TFile*> file,const char *histname,std::vector<D
 }
 //===============================
 // Function to draw 2D histograms
-void DrawHistos2D(std::vector<TFile*> file,const char *histname,std::vector<Double_t> weights,TString XTitle,TString YTitle,TString ZTitle,std::array<Double_t,4> leglimits,TString legtitle,std::vector<TString> legentry,const char *outname, TString outfolder){
+void DrawHistos2D(Bool_t area,std::vector<TFile*> file,const char *histname,std::vector<Double_t> weights,TString XTitle,TString YTitle,TString ZTitle,std::array<Double_t,4> leglimits,TString legtitle,std::vector<TString> legentry,const char *outname, TString outfolder){
 
    // Control size of inputs
    if( !( (file.size() == weights.size()) && (file.size() == legentry.size()) )  ){
@@ -312,23 +321,25 @@ void DrawHistos2D(std::vector<TFile*> file,const char *histname,std::vector<Doub
 
   }
 
-  // Scale signal to have same area as sum of bkgs
-  Double_t BkgIntegral = 0.;
+  if(area == kTRUE){
+    // Scale signal to have same area as sum of bkgs
+    Double_t BkgIntegral = 0.;
 
-  for(Int_t i = 1; i < hist.size(); ++i){
-    BkgIntegral += hist.at(i)-> Integral();
-  }
+    for(Int_t i = 1; i < hist.size(); ++i){
+      BkgIntegral += hist.at(i)-> Integral();
+    }
 
-  hist.at(0)->Scale( BkgIntegral/hist.at(0)->Integral() );
-  for(Int_t kx = 1; kx <= hist.at(0)->GetXaxis()->GetNbins(); ++kx){
-    for(Int_t ky = 1; ky <= hist.at(0)->GetYaxis()->GetNbins(); ++ky){
-      hist.at(0)->SetBinError(kx,ky, sqrt(hist.at(0)->GetBinContent(kx,ky)) );
+    hist.at(0)->Scale( BkgIntegral/hist.at(0)->Integral() );
+    for(Int_t kx = 1; kx <= hist.at(0)->GetXaxis()->GetNbins(); ++kx){
+      for(Int_t ky = 1; ky <= hist.at(0)->GetYaxis()->GetNbins(); ++ky){
+        hist.at(0)->SetBinError(kx,ky, sqrt(hist.at(0)->GetBinContent(kx,ky)) );
+      }
     }
   }
 
   // Write on file
   for(Int_t i = 0; i < hist.size(); ++i){
-    hist.at(i)->Write("",TObject::kOverwrite);
+    hist.at(i)->Write("",TObject::kSingleKey);
   }
 
   for(Int_t i = 0; i < hist.size(); ++i){
@@ -449,6 +460,7 @@ void Chi2CL(std::vector<TFile*> file,const char *histname,std::vector<Double_t> 
   // Graph of Chi2 vs xsec_sig
 
   TGraph *cl_gr = new TGraph();
+  cl_gr->SetName(TString::Format("CLgraph_%s", histname));
   cl_gr->SetMarkerStyle(kFullCircle);
   cl_gr->SetMarkerColor(kBlack);
   cl_gr->SetLineColor(kGreen+2);
@@ -499,6 +511,8 @@ void Chi2CL(std::vector<TFile*> file,const char *histname,std::vector<Double_t> 
 
   //c->Close();
 
+  // Write graph on file
+  cl_gr->Write("",TObject::kSingleKey);
 }
 //===================================
 // Function to calculate and plot Chi2 and CL limits
@@ -575,6 +589,7 @@ void Chi2CL2D(std::vector<TFile*> file,const char *histname,std::vector<Double_t
   // Graph of Chi2 vs xsec_sig
 
   TGraph *cl_gr = new TGraph();
+  cl_gr->SetName(TString::Format("CLgraph_%s", histname));
   cl_gr->SetMarkerStyle(kFullCircle);
   cl_gr->SetMarkerColor(kBlack);
   cl_gr->SetLineColor(kGreen+2);
@@ -623,8 +638,8 @@ void Chi2CL2D(std::vector<TFile*> file,const char *histname,std::vector<Double_t
   outpdf.Form(outfolder + "CL_%s.pdf",outname);
   c->SaveAs(outpdf);
 
-  //c->Close();
-
+  //c->Close();  // Write graph on file
+  cl_gr->Write("",TObject::kSingleKey);
 }
 //===============================
 //---------- END FUNCTIONS -------------------
@@ -699,59 +714,61 @@ void Chi2_MergeHistos()
   std::array<Double_t,4> leglimits_1 = {0.461153,0.548611,0.77193,0.828125};
   std::array<Double_t,4> leglimits2D_1 = {0.190476,0.668403,0.839599,0.878472};
 
+  Bool_t area = kTRUE;
+
   for(Int_t i = 0; i < cat.size(); ++i){
 
     /*
     // 1D histograms
 
-    DrawHistos(infiles,cat.at(i) + "Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Small Jets",legentry,cat.at(i) + "InvMass_small",sampledir);
-    DrawHistos(infiles,cat.at(i) + "Invariant_mass_of_leading_and_subleading_large_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Large Jets",legentry,cat.at(i) + "InvMass_large",sampledir);
-    DrawHistos(infiles,cat.at(i) + "Invariant_mass_of_all_btagged_small_jets",weights,colors,"Invariant Mass [GeV/c^{2}]","#events",leglimits_1,"Invariant Mass of all b-tagged Small Jets",legentry,cat.at(i) + "InvMass_allb",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Small Jets",legentry,cat.at(i) + "InvMass_small",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Invariant_mass_of_leading_and_subleading_large_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Large Jets",legentry,cat.at(i) + "InvMass_large",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Invariant_mass_of_all_btagged_small_jets",weights,colors,"Invariant Mass [GeV/c^{2}]","#events",leglimits_1,"Invariant Mass of all b-tagged Small Jets",legentry,cat.at(i) + "InvMass_allb",sampledir);
 
-    DrawHistos(infiles,cat.at(i) + "DeltaR_between_leading_and_subleading_small_jets",weights,colors,"#Delta R","# events",leglimits_1,"#Delta R between first 2 Small Jets",legentry,cat.at(i) + "DeltaRS",sampledir);
-    DrawHistos(infiles,cat.at(i) + "DeltaPhi_between_leading_and_subleading_small_jets",weights,colors,"|#Delta #varphi|","# events",leglimits_1,"|#Delta #varphi| between first 2 Small Jets",legentry,cat.at(i) + "DeltaPhiS",sampledir);
-    DrawHistos(infiles,cat.at(i) + "DeltaR_between_leading_and_subleading_large_jets",weights,colors,"#Delta R","# events",leglimits_1,"#Delta R between first 2 Large Jets",legentry,cat.at(i) + "DeltaRL",sampledir);
-    DrawHistos(infiles,cat.at(i) + "DeltaPhi_between_leading_and_subleading_large_jets",weights,colors,"|#Delta #varphi|","# events",leglimits_1,"|#Delta #varphi| between first 2 Large Jets",legentry,cat.at(i) + "DeltaPhiL",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "DeltaR_between_leading_and_subleading_small_jets",weights,colors,"#Delta R","# events",leglimits_1,"#Delta R between first 2 Small Jets",legentry,cat.at(i) + "DeltaRS",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "DeltaPhi_between_leading_and_subleading_small_jets",weights,colors,"|#Delta #varphi|","# events",leglimits_1,"|#Delta #varphi| between first 2 Small Jets",legentry,cat.at(i) + "DeltaPhiS",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "DeltaR_between_leading_and_subleading_large_jets",weights,colors,"#Delta R","# events",leglimits_1,"#Delta R between first 2 Large Jets",legentry,cat.at(i) + "DeltaRL",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "DeltaPhi_between_leading_and_subleading_large_jets",weights,colors,"|#Delta #varphi|","# events",leglimits_1,"|#Delta #varphi| between first 2 Large Jets",legentry,cat.at(i) + "DeltaPhiL",sampledir);
 
-    DrawHistos(infiles,cat.at(i) + "leading_small_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Leading Small Jet",legentry,cat.at(i) + "JetPT1S",sampledir);
-    DrawHistos(infiles,cat.at(i) + "subleading_small_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Subleading Small Jet",legentry,cat.at(i) + "JetPT2S",sampledir);
-    DrawHistos(infiles,cat.at(i) + "leading_large_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Leading Large Jet",legentry,cat.at(i) + "JetPT1L",sampledir);
-    DrawHistos(infiles,cat.at(i) + "subleading_large_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Subleading Large Jet",legentry,cat.at(i) + "JetPT2L",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "leading_small_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Leading Small Jet",legentry,cat.at(i) + "JetPT1S",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "subleading_small_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Subleading Small Jet",legentry,cat.at(i) + "JetPT2S",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "leading_large_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Leading Large Jet",legentry,cat.at(i) + "JetPT1L",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "subleading_large_jet_pt",weights,colors,"p_{T} [GeV/c]","# events",leglimits_1,"pT of Subleading Large Jet",legentry,cat.at(i) + "JetPT2L",sampledir);
 
-    DrawHistos(infiles,cat.at(i) + "number_of_constituents_of_leading_large_jet",weights,colors,"Number of Constituents","# events",leglimits_1,"Number of Constituents of Leading Large Jet",legentry,cat.at(i) + "NConst1",sampledir);
-    DrawHistos(infiles,cat.at(i) + "number_of_constituents_of_subleading_large_jet",weights,colors,"Number of Constituents","# events",leglimits_1,"Number of Constituents of Subleading Large Jet",legentry,cat.at(i) + "NConst2",sampledir);
-    DrawHistos(infiles,cat.at(i) + "number_of_small_jets",weights,colors,"Number of Jets","# events",leglimits_1,"Number of Small Jets",legentry,cat.at(i) + "Nsmall",sampledir);
-    DrawHistos(infiles,cat.at(i) + "number_of_btagged_small_jets",weights,colors,"Number of Jets","# events",leglimits_1,"Number of b-tagged Small Jets",legentry,cat.at(i) + "Nbsmall",sampledir);
-    DrawHistos(infiles,cat.at(i) + "number_of_large_jets",weights,colors,"Number of Jets","# events",leglimits_1,"Number of Large Jets",legentry,cat.at(i) + "Nlarge",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "number_of_constituents_of_leading_large_jet",weights,colors,"Number of Constituents","# events",leglimits_1,"Number of Constituents of Leading Large Jet",legentry,cat.at(i) + "NConst1",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "number_of_constituents_of_subleading_large_jet",weights,colors,"Number of Constituents","# events",leglimits_1,"Number of Constituents of Subleading Large Jet",legentry,cat.at(i) + "NConst2",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "number_of_small_jets",weights,colors,"Number of Jets","# events",leglimits_1,"Number of Small Jets",legentry,cat.at(i) + "Nsmall",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "number_of_btagged_small_jets",weights,colors,"Number of Jets","# events",leglimits_1,"Number of b-tagged Small Jets",legentry,cat.at(i) + "Nbsmall",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "number_of_large_jets",weights,colors,"Number of Jets","# events",leglimits_1,"Number of Large Jets",legentry,cat.at(i) + "Nlarge",sampledir);
 
-    DrawHistos(infiles,cat.at(i) + "Prompt_Track_Fraction_of_leading_large_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Leading Large Jet",legentry,cat.at(i) + "PTF1L",sampledir);
-    DrawHistos(infiles,cat.at(i) + "Prompt_Track_Fraction_of_subleading_large_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Subleading Large Jet",legentry,cat.at(i) + "PTF2L",sampledir);
-    DrawHistos(infiles,cat.at(i) + "Prompt_Track_Fraction_of_leading_small_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Leading Small Jet",legentry,cat.at(i) + "PTF1S",sampledir);
-    DrawHistos(infiles,cat.at(i) + "Prompt_Track_Fraction_of_subleading_small_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Subleading Small Jet",legentry,cat.at(i) + "PTF2S",sampledir);
-    DrawHistos(infiles,cat.at(i) + "Prompt_Track_Fraction_of_leading_btagged_small_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Leading b-tagged Small Jet",legentry,cat.at(i) + "PTF1bS",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Prompt_Track_Fraction_of_leading_large_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Leading Large Jet",legentry,cat.at(i) + "PTF1L",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Prompt_Track_Fraction_of_subleading_large_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Subleading Large Jet",legentry,cat.at(i) + "PTF2L",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Prompt_Track_Fraction_of_leading_small_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Leading Small Jet",legentry,cat.at(i) + "PTF1S",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Prompt_Track_Fraction_of_subleading_small_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Subleading Small Jet",legentry,cat.at(i) + "PTF2S",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "Prompt_Track_Fraction_of_leading_btagged_small_jet",weights,colors,"PTF","# events",leglimits_1,"PTF of Leading b-tagged Small Jet",legentry,cat.at(i) + "PTF1bS",sampledir);
 
-    DrawHistos(infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_leading_large_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Leading Large Jet",legentry,cat.at(i) + "ECF1L",sampledir);
-    DrawHistos(infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_subleading_large_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Subleading Large Jet",legentry,cat.at(i) + "ECF2L",sampledir);
-    DrawHistos(infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_leading_small_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Leading Small Jet",legentry,cat.at(i) + "ECF1S",sampledir);
-    DrawHistos(infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_subleading_small_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Subleading Small Jet",legentry,cat.at(i) + "ECF2S",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_leading_large_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Leading Large Jet",legentry,cat.at(i) + "ECF1L",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_subleading_large_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Subleading Large Jet",legentry,cat.at(i) + "ECF2L",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_leading_small_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Leading Small Jet",legentry,cat.at(i) + "ECF1S",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "2point_Energy_Correlation_div_pT_of_subleading_small_jet",weights,colors,"ECF2/pT [GeV/c]","# events",leglimits_1,"ECF2/pT of Subleading Small Jet",legentry,cat.at(i) + "ECF2S",sampledir);
 
-    DrawHistos(infiles,cat.at(i) + "pt_of_first_two_leptons",weights,colors,"p_{Tll} [GeV/c]","# events",leglimits_1,"pT_{ll} of Z tagging Leptons",legentry,cat.at(i) + "Lep2PT",sampledir);
-    DrawHistos(infiles,cat.at(i) + "DeltaR_between_first_two_leptons",weights,colors,"#Delta R","# events",leglimits_1,"#Delta R between Z tagging Leptons",legentry,cat.at(i) + "LepDeltaR",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "pt_of_first_two_leptons",weights,colors,"p_{Tll} [GeV/c]","# events",leglimits_1,"pT_{ll} of Z tagging Leptons",legentry,cat.at(i) + "Lep2PT",sampledir);
+    DrawHistos(area,infiles,cat.at(i) + "DeltaR_between_first_two_leptons",weights,colors,"#Delta R","# events",leglimits_1,"#Delta R between Z tagging Leptons",legentry,cat.at(i) + "LepDeltaR",sampledir);
 
     // 2D histograms
 
-    DrawHistos2D(infiles,cat.at(i) + "IMsmall_vs_DeltaRsmall",weights,"m_{jj} of first 2 Small Jets [GeV/c^2]","#Delta R between first 2 Small Jets","# events",leglimits2D_1,"m_{jj} vs #Delta R of first 2 Small Jets",legentry,cat.at(i) + "IMs_DRs",sampledir);
-    DrawHistos2D(infiles,cat.at(i) + "IMlarge_vs_DeltaRlarge",weights,"m_{jj} of first 2 Large Jets [GeV/c^2]","#Delta R between first 2 Large Jets","# events",leglimits2D_1,"m_{jj} vs #Delta R of first 2 Large Jets",legentry,cat.at(i) + "IMl_DRl",sampledir);
+    DrawHistos2D(area,infiles,cat.at(i) + "IMsmall_vs_DeltaRsmall",weights,"m_{jj} of first 2 Small Jets [GeV/c^2]","#Delta R between first 2 Small Jets","# events",leglimits2D_1,"m_{jj} vs #Delta R of first 2 Small Jets",legentry,cat.at(i) + "IMs_DRs",sampledir);
+    DrawHistos2D(area,infiles,cat.at(i) + "IMlarge_vs_DeltaRlarge",weights,"m_{jj} of first 2 Large Jets [GeV/c^2]","#Delta R between first 2 Large Jets","# events",leglimits2D_1,"m_{jj} vs #Delta R of first 2 Large Jets",legentry,cat.at(i) + "IMl_DRl",sampledir);
 
-    DrawHistos2D(infiles,cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S",sampledir);
-    DrawHistos2D(infiles,cat.at(i) + "PTF1small_vs_PTF1large",weights,"PTF of Leading Small Jet","PTF of Leading Large Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading Small vs Large Jet",legentry,cat.at(i) + "PTF1S_PTF1L",sampledir);
-    DrawHistos2D(infiles,cat.at(i) + "PTF1bsmall_vs_PTF1large",weights,"PTF of Leading b-tagged Small Jet","PTF of Leading Large Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading b-tagged Small vs Leading Large Jet",legentry,cat.at(i) + "PTF1bS_PTF1L",sampledir);
+    DrawHistos2D(area,infiles,cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S",sampledir);
+    DrawHistos2D(area,infiles,cat.at(i) + "PTF1small_vs_PTF1large",weights,"PTF of Leading Small Jet","PTF of Leading Large Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading Small vs Large Jet",legentry,cat.at(i) + "PTF1S_PTF1L",sampledir);
+    DrawHistos2D(area,infiles,cat.at(i) + "PTF1bsmall_vs_PTF1large",weights,"PTF of Leading b-tagged Small Jet","PTF of Leading Large Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading b-tagged Small vs Leading Large Jet",legentry,cat.at(i) + "PTF1bS_PTF1L",sampledir);
     */
     
     // Histos for Chi2 calculation
-    DrawHistos(infiles,"Chi2" + cat.at(i) + "Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Small Jets",legentry,cat.at(i) + "InvMass_small" + "_Chi2",sampledir);
-    DrawHistos2D(infiles,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2LD",sampledir);
-    DrawHistos2D(infiles,"Chi2HD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2HD",sampledir);
+    DrawHistos(area,infiles,"Chi2" + cat.at(i) + "Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Small Jets",legentry,cat.at(i) + "InvMass_small" + "_Chi2",sampledir);
+    DrawHistos2D(area,infiles,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2LD",sampledir);
+    DrawHistos2D(area,infiles,"Chi2HD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2HD",sampledir);
   }
 
 
@@ -773,6 +790,25 @@ void Chi2_MergeHistos()
   for(Int_t i = 0; i < cat.size(); ++i){
     Chi2CL(infiles,"Chi2" + cat.at(i) + "Invariant_mass_of_leading_and_subleading_small_jets",xsec_s1,xsec,ntot,lumi,leglimits_2,"m_{jj} of first 2 Small Jets",cat.at(i) + "InvMass_small", dir);
     Chi2CL2D(infiles,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",xsec_s2,xsec,ntot,lumi,leglimits_2,"PTF of L vs Subl Small Jet",cat.at(i) + "PTF1S_PTF2S" + "_LD", dir);
+  }
+
+  // Stack histograms with 95% CL xsec_sig
+
+  std::vector<Double_t> xsec_CL = {0.16, 0.102, 0.25, 0.098};
+  area = kFALSE;
+
+  Int_t jCL = 0;
+  for(Int_t i = 0; i < cat.size(); ++i){
+    xsec.at(0) = xsec_CL.at(jCL);
+    weights.at(0) = ( lumi*xsec.at(0) / ntot.at(0) );
+    legentry.at(0) = TString::Format("f #bar{f} -> H Z -> qv1 #bar{qv1} l^{+} l^{-}, #sigma = %.2f pb",xsec_CL.at(jCL));
+    DrawHistosStack(area,infiles,"Chi2" + cat.at(i) + "Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Small Jets",legentry,cat.at(i) + "InvMass_small" + "_Chi2",dir + "95_");
+    jCL += 1;
+    xsec.at(0) = xsec_CL.at(jCL);
+    weights.at(0) = ( lumi*xsec.at(0) / ntot.at(0) );
+    legentry.at(0) = TString::Format("f #bar{f} -> H Z -> qv1 #bar{qv1} l^{+} l^{-}, #sigma = %.3f pb",xsec_CL.at(jCL));
+    DrawHistos2D(area,infiles,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2LD",dir + "95_");
+    jCL += 1;
   }
 
 }//end MergeHistos
