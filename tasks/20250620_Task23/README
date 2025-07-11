@@ -78,8 +78,8 @@ Log file:
 /gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_Zjets_g_#.log (1 <= # <= 10)
 /gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_ZZ_#.log (1 <= # <= 10)
 /gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_HZ_SM_#.log (1 <= # <= 10)
-/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_q_#.root (11 <= # <= 50) 
-/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_g_#.root (11 <= # <= 50)
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_q_#.log (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_g_#.log (11 <= # <= 50)
 
 Condor output files:
 /gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_signal_EJ_job_#.out (.log, .err) (1 <= # <= 10) 

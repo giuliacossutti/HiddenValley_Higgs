@@ -40,8 +40,8 @@ Data file:
 /eos/infnts/atlas/giuliac/condor/20250527_Task21/root_outputs/50K_bkg_Zjets_g_#.root (11 <= # <= 50)
 
 Log file:
-/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_q_#.root (11 <= # <= 50) 
-/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_g_#.root (11 <= # <= 50)
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_q_#.log (11 <= # <= 50) 
+/eos/infnts/atlas/giuliac/condor/20250527_Task21/log_outputs/50K_bkg_Zjets_g_#.log (11 <= # <= 50)
 
 Condor output files:
 /eos/infnts/atlas/giuliac/condor/20250527_Task21/condor_out/50K_bkg_Zjets_q_job_#.out (.log, .err) (11 <= # <= 50) 

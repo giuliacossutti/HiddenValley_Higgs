@@ -1,0 +1,21 @@
+# root with condor
+
+executable = /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250710_Task25/rootieQ.sh
+
+getenv=True
+
+request_cpus=1
+request_memory=2048
+request_disk=1000000
+
+log = /gfsvol01/atlas/giuliac/plots_and_outputs/20250710_Task25/rootieQ.log
+output = /gfsvol01/atlas/giuliac/plots_and_outputs/20250710_Task25/rootieQ.out
+error = /gfsvol01/atlas/giuliac/plots_and_outputs/20250710_Task25/rootieQ.err
+
+notification = complete
+notify_user = giulia.cossutti@cern.ch
+
+should_transfer_files = Yes
+when_to_transfer_output = ON_EXIT
+
+queue

@@ -1,0 +1,64 @@
+Author: Giulia Cossutti
+Date: 9th July 2025
+Task: Task25
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+- In /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250709_Task25/
+5M_bkg_Zjets_q.sh
+5M_bkg_Zjets_q.sub
+5M_bkg_Zjets_g.sh
+5M_bkg_Zjets_g.sub
+
+Description:
+- Generation of 5M events per Z+jets process with pTHatMin and
+  reduced number of branches in Delphes card.
+- BuildHistos to test number of events passing the final selection.
+
+Pythia8 card file:
+Obtained through
+makepythia8cards.sh
+in
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250709_Task25/
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_q_pTHatMin.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_g_pTHatMin.cmnd
+as 
+/gfsvol01/atlas/giuliac/condor/20250709_Task25/pythia8_cards/*
+
+Delphes card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering_Unique_Compact.tcl
+
+Data file:
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/root_outputs/50K_bkg_Zjets_q_#.root (1 <= # <= 100) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/root_outputs/50K_bkg_Zjets_g_#.root (1 <= # <= 100)
+
+Log file:
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/log_outputs/50K_bkg_Zjets_q_#.log (1 <= # <= 100) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/log_outputs/50K_bkg_Zjets_g_#.log (1 <= # <= 100)
+
+Condor output files:
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/condor_out/50K_bkg_Zjets_q_job_#.out (.log, .err) (1 <= # <= 100) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/condor_out/50K_bkg_Zjets_g_job_#.out (.log, .err) (1 <= # <= 100)
+
+Analysis files:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250709_Task25/BuildHistos.C
+
+***
+Files from the various samples are distinguished by a tag: signal_EJ, bkg_Zjets_q, bkg_Zjets_g, bkg_ZZ, bkg_HZ_SM
+'''
+If they contain:
+_sample0 : signal
+_sample1 : bkg_HZ_SM
+_sample2 : bkg_ZZ
+_sample3 : bkg_Zjets_g
+_sample4 : bkg_Zjets_q
+***
+
+Plot files:
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250709_Task25/*.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250709_Task25/pTHatMin_*.txt
