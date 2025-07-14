@@ -1,0 +1,78 @@
+Author: Giulia Cossutti
+Date: 14th July 2025
+Task: Task26
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+- In /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250521_Task20/
+500K_signal_EJ.sh
+500K_signal_EJ.sub
+500K_bkg_ZZ.sh
+500K_bkg_ZZ.sub
+500K_bkg_HZ_SM.sh
+500K_bkg_HZ_SM.sub
+- In /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250709_Task25/
+5M_bkg_Zjets_q.sh
+5M_bkg_Zjets_q.sub
+5M_bkg_Zjets_g.sh
+5M_bkg_Zjets_g.sub
+
+Description:
+- Combination of calculation of 95% CL limits through Chi2 calculation for different signal xsections in some histograms
+  for categories A and B (stat error only). 
+
+Pythia8 card file:
+Obtained through
+makepythia8cards.sh
+in
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250521_Task20/
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250709_Task25/
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_signal_EJ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_q_pTHatMin.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_g_pTHatMin.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_ZZ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_HZ_SM.cmnd
+as 
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/pythia8_cards/*
+/gfsvol01/atlas/giuliac/condor/20250709_Task25/pythia8_cards/*
+
+Delphes card file:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering_Unique.tcl
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/delphes_card_ATLAS_Reclustering_Unique_Compact.tcl
+
+Data file:
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_signal_EJ_#.root (1 <= # <= 10) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/root_outputs/50K_bkg_Zjets_q_#.root (1 <= # <= 100) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/root_outputs/50K_bkg_Zjets_g_#.root (1 <= # <= 100)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_bkg_ZZ_#.root (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/root_outputs/50K_bkg_HZ_SM_#.root (1 <= # <= 10)
+
+Log file:
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_signal_EJ_#.log (1 <= # <= 10) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/log_outputs/50K_bkg_Zjets_q_#.log (1 <= # <= 100) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/log_outputs/50K_bkg_Zjets_g_#.log (1 <= # <= 100)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_ZZ_#.log (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/log_outputs/50K_bkg_HZ_SM_#.log (1 <= # <= 10)
+
+Condor output files:
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_signal_EJ_job_#.out (.log, .err) (1 <= # <= 10) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/condor_out/50K_bkg_Zjets_q_job_#.out (.log, .err) (1 <= # <= 100) 
+/eos/infnts/atlas/giuliac/condor/20250709_Task25/condor_out/50K_bkg_Zjets_g_job_#.out (.log, .err) (1 <= # <= 100)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_bkg_ZZ_job_#.out (.log, .err) (1 <= # <= 10)
+/gfsvol01/atlas/giuliac/condor/20250521_Task20/condor_out/50K_bkg_HZ_SM_job_#.out (.log, .err) (1 <= # <= 10)
+
+Analysis files:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250714_Task26/CombineCL.C
+
+Plot files:
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250714_Task26/CL_graphs.root
+produced with histos and graphs taken by 
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250710_Task25/area_MergedHistos.root
+
+Plots:
+CombinedCL.pdf : Chi2 vs xsec_signal from the combination of the same graph from Prompt Track Fraction of leading vs subleading small jet (Low definition bins) in both A, B categories
