@@ -1,0 +1,71 @@
+Author: Giulia Cossutti
+Date: 17th July 2025
+Task: Task27
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+- In /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250717_Task27/
+500K_*.sh
+500K_*.sub
+5M_*.sh
+5M_*.sub
+
+Description:
+- Generation of compact samples with pythia8 and delphes seeds to study the impact of
+  systematic uncertainties on 95% CL limits on xsec_sig.
+- Samples: nominal, _JES, _etrk, _eb.
+
+Pythia8 card file:
+Obtained through
+makepythia8delphescards.sh
+in
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250717_Task27/
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_signal_EJ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_q_pTHatMin.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_g_pTHatMin.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_ZZ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_HZ_SM.cmnd
+as 
+/gfsvol01/atlas/giuliac/condor/20250717_Task27/pythia8_cards/*
+
+Delphes card file:
+Obtained through
+makepythia8delphescards.sh
+in
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250717_Task27/
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact.tcl
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact_JES.tcl
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact_etrk.tcl
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact_eb.tcl
+as
+/gfsvol01/atlas/giuliac/condor/20250717_Task27/delphes_cards/*
+
+Data file:
+/eos/infnts/atlas/giuliac/condor/20250717_Task27/root_outputs/*.root
+
+Log file:
+/eos/infnts/atlas/giuliac/condor/20250717_Task27/log_outputs/*.log
+
+Condor output files:
+/eos/infnts/atlas/giuliac/condor/20250717_Task27/condor_out/*.out (.log, .err)
+
+Analysis files:
+
+***
+Files from the various samples are distinguished by a tag: signal_EJ, bkg_Zjets_q, bkg_Zjets_g, bkg_ZZ, bkg_HZ_SM
+'''
+If they contain:
+_JES : sample with Jet Energy Scale lower by 4%
+_etrk : sample with lowered track reconstruction efficiency
+_eb : sample with lowered b-tagging efficiency
+***
+
+Plot files:
+
+Plots:

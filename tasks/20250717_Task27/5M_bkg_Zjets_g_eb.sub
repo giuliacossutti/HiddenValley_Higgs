@@ -1,0 +1,22 @@
+# 5M background events: Z + jets from gluon, Z decay to charged leptons
+
+executable = /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250717_Task27/5M_bkg_Zjets_g_eb.sh
+arguments = $(Item)
+
+getenv=True
+
+request_cpus = 1
+request_memory = 2048
+request_disk = 10000000
+
+log = /eos/infnts/atlas/giuliac/condor/20250717_Task27/condor_out/bkg_Zjets_g_eb_job_$(Item).log
+output = /eos/infnts/atlas/giuliac/condor/20250717_Task27/condor_out/bkg_Zjets_g_eb_job_$(Item).out
+error = /eos/infnts/atlas/giuliac/condor/20250717_Task27/condor_out/bkg_Zjets_g_eb_job_$(Item).err
+
+notification = complete
+notify_user = giulia.cossutti@cern.ch
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+
+queue from seq 1 100 |
