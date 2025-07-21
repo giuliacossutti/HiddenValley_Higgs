@@ -465,6 +465,7 @@ void Chi2CL(std::vector<TFile*> file,const char *histname,std::vector<Double_t> 
   cl_gr->SetMarkerStyle(kFullCircle);
   cl_gr->SetMarkerColor(kBlack);
   cl_gr->SetLineColor(kGreen+2);
+  cl_gr->SetLineWidth(2);
   cl_gr->GetXaxis()->SetTitleSize(.045);
   cl_gr->GetYaxis()->SetTitleSize(.045);
   cl_gr->GetXaxis()->SetTitle("#sigma_{sig} [pb]");
@@ -594,6 +595,7 @@ void Chi2CL2D(std::vector<TFile*> file,const char *histname,std::vector<Double_t
   cl_gr->SetMarkerStyle(kFullCircle);
   cl_gr->SetMarkerColor(kBlack);
   cl_gr->SetLineColor(kGreen+2);
+  cl_gr->SetLineWidth(2);
   cl_gr->GetXaxis()->SetTitleSize(.045);
   cl_gr->GetYaxis()->SetTitleSize(.045);
   cl_gr->GetXaxis()->SetTitle("#sigma_{sig} [pb]");
@@ -745,6 +747,7 @@ void Chi2CL2Dsys(std::vector<TFile*> file,TFile* sysfile,std::vector<TString> sy
   cl_gr->SetMarkerStyle(kFullCircle);
   cl_gr->SetMarkerColor(kBlack);
   cl_gr->SetLineColor(kGreen+2);
+  cl_gr->SetLineWidth(2);
   cl_gr->GetXaxis()->SetTitleSize(.045);
   cl_gr->GetYaxis()->SetTitleSize(.045);
   cl_gr->GetXaxis()->SetTitle("#sigma_{sig} [pb]");
@@ -756,6 +759,7 @@ void Chi2CL2Dsys(std::vector<TFile*> file,TFile* sysfile,std::vector<TString> sy
   syscl_gr->SetMarkerStyle(kFullCircle);
   syscl_gr->SetMarkerColor(kBlack);
   syscl_gr->SetLineColor(kViolet-1);
+  syscl_gr->SetLineWidth(2);
   syscl_gr->GetXaxis()->SetTitleSize(.045);
   syscl_gr->GetYaxis()->SetTitleSize(.045);
   syscl_gr->GetXaxis()->SetTitle("#sigma_{sig} [pb]");
@@ -780,10 +784,13 @@ void Chi2CL2Dsys(std::vector<TFile*> file,TFile* sysfile,std::vector<TString> sy
 
   TCanvas *c = new TCanvas(canva, canva, 0, 0, 800, 600);
   gStyle->SetOptStat(0);
+  gStyle->SetTitleXSize(0.045);
+  gStyle->SetTitleYSize(0.045);
   gPad->SetLeftMargin(0.15);
   gPad->SetLogy();
 
   TMultiGraph* mg = new TMultiGraph;
+  mg->SetTitle(";#sigma_{sig} [pb];#chi^{2}");
   mg->Add(cl_gr);
   mg->Add(syscl_gr);
   mg->Draw("APL"); 
