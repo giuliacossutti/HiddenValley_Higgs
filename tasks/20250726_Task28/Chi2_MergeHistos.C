@@ -52,6 +52,18 @@ void CustomizeLeg(TLegend* legend){
   legend->SetEntrySeparation(0.01);
 }
 //===================================
+// Function to customize Chi2vsxsec_sig graphs:
+void CustomizeGr(TGraph* cl_gr, Color_t color){
+  cl_gr->SetMarkerStyle(kFullCircle);
+  cl_gr->SetMarkerColor(kBlack);
+  cl_gr->SetLineColor(color);
+  cl_gr->SetLineWidth(2);
+  cl_gr->GetXaxis()->SetTitleSize(.045);
+  cl_gr->GetYaxis()->SetTitleSize(.045);
+  cl_gr->GetXaxis()->SetTitle("#sigma_{sig} [pb]");
+  cl_gr->GetYaxis()->SetTitle("#chi^{2}");
+}
+//===================================
 // Function to draw histograms in a canva and save it in pdf
 // File vector must have signal file first and then all bkg files
 // Signal is overlapped to the stack of backgrounds
@@ -713,7 +725,7 @@ void Chi2CL2Dsys(std::vector<TFile*> file,TFile* sysfile,std::vector<TString> sy
 
    // Control size of inputs
    if( !( (file.size() == xsec.size()) && (file.size() == ntot.size()) )  ){
-    cout << "Error in Chi2CL2D: number of histograms not defined in " << histname << endl;
+    cout << "Error in Chi2CL2Dsys: number of histograms not defined in " << histname << endl;
     cout << "file size: " << file.size() << "   xsec size: " << xsec.size() << endl;
     cout << "ntot size: " << ntot.size() << endl;
     exit(EXIT_FAILURE);
@@ -887,6 +899,214 @@ void Chi2CL2Dsys(std::vector<TFile*> file,TFile* sysfile,std::vector<TString> sy
   syscl_gr->Write("",TObject::kSingleKey);
 }
 //===============================
+// Function to calculate and plot Chi2 and CL limits with single and combined systematics
+// File vector must have signal file first and then all bkg files
+void Chi2CL2Dsinglesys(std::vector<TFile*> file,TFile* sysfile,std::vector<TString> systag, const char *histname,std::vector<Double_t> xsec_sig,std::vector<Double_t> xsec,std::vector<Double_t> ntot,Double_t lumi,std::array<Double_t,4> leglimits,TString legtitle,const char *outname, TString outfolder, std::vector<Color_t> singlesyscolors,std::vector<TString> syslegentry){
+
+  // Control size of inputs
+  if( !( (file.size() == xsec.size()) && (file.size() == ntot.size()) )  ){
+    cout << "Error in Chi2CL2Dsinglesys: number of histograms not defined in " << histname << endl;
+    cout << "file size: " << file.size() << "   xsec size: " << xsec.size() << endl;
+    cout << "ntot size: " << ntot.size() << endl;
+    exit(EXIT_FAILURE);
+  }
+  if( systag.size() != singlesyscolors.size() ){
+    cout << "Error in Chi2CL2Dsinglesys: number of systematics not defined in " << histname << endl;
+    cout << "systag size: " << systag.size() << "   singlesyscolors size: " << singlesyscolors.size() << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  // Take histograms of 1sigma systematics
+  std::vector<TH2F*> syshist;
+
+  for(Int_t i = 0; i < systag.size(); ++i){
+    TH2F *hs = (TH2F*)sysfile->Get( TString::Format( "%s_sys" + systag.at(i), histname).Data() )->Clone( TString::Format( "%s_sys" + systag.at(i), histname).Data() );
+    syshist.push_back(hs);
+    cout << "Got Systematic " << systag.at(i) << endl;
+  }
+
+  // Take histograms from files
+  std::vector<TH2F*> hist;
+
+  for(Int_t i = 0; i < file.size(); ++i){
+    TH2F *h = (TH2F*)file.at(i)->Get(histname)->Clone( (histname + std::to_string(i)).c_str() );
+    hist.push_back(h);
+  }
+
+  // Scale histograms by Integrated Luminosity, Cross-section and number of generated events
+  std::vector<Double_t> weights;
+
+  for(Int_t i = 0; i < file.size(); ++i){
+    weights.push_back( lumi*xsec.at(i) / ntot.at(i) );
+  }
+
+  for(Int_t i = 1; i < hist.size(); ++i){
+    hist.at(i)->Sumw2();
+    hist.at(i)->Scale(weights.at(i));
+  }
+
+  // Calculate Chi2 for each value of xsec_sig
+
+  // Vector of signal histograms with different xsec_sig
+  std::vector<TH2F*> hist_sig;
+
+  for(Int_t j = 0; j < xsec_sig.size(); ++j){
+    TH2F *h = (TH2F*)file.at(0)->Get(histname)->Clone( (histname + std::to_string( j + file.size()) ).c_str() );
+    hist_sig.push_back(h);
+  }
+
+  // Vector of Chi2 with different xsec_sig
+  Double_t Chi2j = 0.;
+  std::vector<Double_t> Chi2;
+  Double_t syssum = 0.;
+  Double_t sysChi2j = 0.;
+  std::vector<Double_t> sysChi2;
+  std::vector<Double_t> singlesysChi2j;
+  std::vector<std::vector<Double_t>> singlesysChi2;
+  for(Int_t s = 0; s < systag.size(); ++s){
+    singlesysChi2j.push_back(0.);
+    singlesysChi2.push_back({});
+  }
+
+  // Histogram of sum of bkgs
+  TH2F *hist_bkg = (TH2F*)hist.at(1)->Clone( (histname +  std::to_string( xsec_sig.size() + file.size()) ).c_str() );
+  for(Int_t i = 2; i < hist.size(); ++i){
+    hist_bkg->Add(hist.at(i));
+  }
+
+  for(Int_t j = 0; j < xsec_sig.size(); ++j){
+
+    // Scale properly the signal
+    weights.at(0) = lumi*xsec_sig.at(j) / ntot.at(0);
+    hist_sig.at(j)->Sumw2();
+    hist_sig.at(j)->Scale(weights.at(0));
+
+    // Calculate Chi2
+    Chi2j = 0.;
+    sysChi2j = 0.;
+    for(Int_t c = 0; c < systag.size(); ++c){
+      singlesysChi2j.at(c) = 0.;
+    }
+
+    for(Int_t kx = 1; kx <= hist_sig.at(j)->GetXaxis()->GetNbins(); ++kx){
+      for(Int_t ky = 1; ky <= hist_sig.at(j)->GetYaxis()->GetNbins(); ++ky){
+
+        // Stat uncertainty only
+        Chi2j += pow( hist_sig.at(j)->GetBinContent(kx,ky) ,2) / hist_bkg->GetBinContent(kx,ky) ;
+
+        // Stat + Single Sys uncertainty
+        for(Int_t s = 0; s < systag.size(); ++s){
+          singlesysChi2j.at(s) += pow( hist_sig.at(j)->GetBinContent(kx,ky) ,2) / (hist_bkg->GetBinContent(kx,ky) + pow( syshist.at(s)->GetBinContent(kx,ky) ,2)) ;
+        }  
+        
+        // Stat + Sys uncertainty
+        syssum = 0.;
+        for(Int_t s = 0; s < systag.size(); ++s){
+          syssum += pow( syshist.at(s)->GetBinContent(kx,ky) ,2) ;
+        }  
+        sysChi2j += pow( hist_sig.at(j)->GetBinContent(kx,ky) ,2) / (hist_bkg->GetBinContent(kx,ky) + syssum) ;
+      }
+    }
+
+    Chi2.push_back(Chi2j);
+    sysChi2.push_back(sysChi2j);
+    for(Int_t s = 0; s < systag.size(); ++s){
+      singlesysChi2.at(s).push_back(singlesysChi2j.at(s));
+    }
+  }
+
+  // Graphs of Chi2 vs xsec_sig
+  // Stat only
+  TGraph *cl_gr = new TGraph();
+  cl_gr->SetName(TString::Format("CLgraph_%s", histname));
+  CustomizeGr(cl_gr, kGreen+2);
+
+  // Stat + Single Sys
+  std::vector<TGraph *> singlesyscl_gr;
+
+  for(Int_t s = 0; s < systag.size(); ++s){
+    TGraph *gr = new TGraph();
+    gr->SetName(TString::Format("singlesysCLgraph_%s" + systag.at(s), histname));
+    CustomizeGr(gr, singlesyscolors.at(s));
+    singlesyscl_gr.push_back(gr);
+  }
+
+  // Stat + Sys
+  TGraph *syscl_gr = new TGraph();
+  syscl_gr->SetName(TString::Format("sysCLgraph_%s", histname));
+  CustomizeGr(syscl_gr, kViolet-1);
+
+  // Fill graphs
+  for(Int_t j = 0; j < xsec_sig.size(); ++j){
+    cl_gr->AddPoint(xsec_sig.at(j),Chi2.at(j));
+    syscl_gr->AddPoint(xsec_sig.at(j),sysChi2.at(j));
+    for(Int_t s = 0; s < systag.size(); ++s){
+      singlesyscl_gr.at(s)->AddPoint(xsec_sig.at(j),singlesysChi2.at(s).at(j));
+    }
+  }
+
+  // CL limit
+
+  Double_t CL = TMath::ChisquareQuantile(0.95, hist_bkg->GetXaxis()->GetNbins()*hist_bkg->GetYaxis()->GetNbins());
+
+  TLine* hor = new TLine(xsec_sig.at(0) , CL, xsec_sig.at(xsec_sig.size()-1), CL);
+  hor->SetLineColor(kRed);
+  hor->SetLineWidth(2);
+
+  TString canva;
+  canva.Form("cCLsinglesys%s",histname);
+
+  TCanvas *c = new TCanvas(canva, canva, 0, 0, 800, 600);
+  gStyle->SetOptStat(0);
+  gStyle->SetTitleXSize(0.045);
+  gStyle->SetTitleYSize(0.045);
+  gPad->SetLeftMargin(0.15);
+  gPad->SetLogy();
+
+  TMultiGraph* mg = new TMultiGraph;
+  mg->SetTitle(";#sigma_{sig} [pb];#chi^{2}");
+  mg->Add(cl_gr);
+  mg->Add(syscl_gr);
+  for(Int_t s = 0; s < systag.size(); ++s){
+    mg->Add(singlesyscl_gr.at(s));
+  }
+  mg->Draw("APL"); 
+
+  hor->Draw("L same");
+
+  // Legend
+  TLegend* legend = new TLegend(leglimits[0],leglimits[1],leglimits[2],leglimits[3]);
+
+  TString head;
+  head = TString::Format("#splitline{#splitline{Model D, c#tau_{#pi_{D}} = 50 mm, Category %.1s}{PYTHIA8+DELPHES, #sqrt{s}=13.6 TeV, L= %.0f fb^{-1}}}{ 95%% CL limits on #sigma_{sig} using " + legtitle + "}", outname, lumi/1000.);
+
+  legend->SetHeader(head,"C");
+  CustomizeLeg(legend);
+  legend->SetNColumns(2);
+
+  // Add the right entry to the legend
+  legend->AddEntry(cl_gr,"Stat only");
+  legend->AddEntry(syscl_gr,"Stat + Sys");
+  for(Int_t s = 0; s < systag.size(); ++s){
+    legend->AddEntry(singlesyscl_gr.at(s),"Stat + " + syslegentry.at(s));
+  }
+  legend->AddEntry(hor,"95% CL");
+  legend->Draw();
+ 
+  TString outpdf;
+  outpdf.Form(outfolder + "singlesysCL_%s.pdf",outname);
+  c->SaveAs(outpdf);
+
+  //c->Close();  
+  
+  // Write graph on file
+  cl_gr->Write("",TObject::kSingleKey);
+  syscl_gr->Write("",TObject::kSingleKey);
+  for(Int_t s = 0; s < systag.size(); ++s){
+    singlesyscl_gr.at(s)->Write("",TObject::kSingleKey);
+  }
+}
+//===============================
 //---------- END FUNCTIONS -------------------
 
 
@@ -918,7 +1138,7 @@ void Chi2_MergeHistos()
 
   // Systematics tags
   std::vector<TString> systag = {"_JES", "_etrk", "_eb", "_xsec"};
-  std::vector<TString> syslegentry = {"Jet Energy Scale", "Charged Hadron Tracking Efficiency", "b-tagging Efficiency", "Background Estimation"};
+  std::vector<TString> syslegentry = {"Jet Energy Scale", "Charged Hadron Tracking Efficiency", "b-tagging Efficiency", "Z+jets Background Estimation"};
 
   // Integrated Luminosity [pb^-1] (arbitrary, no real data here)
   Double_t lumi = 360000;
@@ -1033,7 +1253,7 @@ void Chi2_MergeHistos()
 
   }
 
-/*
+
   // Calculation of Chi2 and CL limits
 
   // Signal xsections [pb]
@@ -1050,11 +1270,16 @@ void Chi2_MergeHistos()
   std::array<Double_t,4> leglimits_2 = {0.294486,0.664931,0.605263,0.835069};
   std::array<Double_t,4> leglimits_3 = {0.293233,0.604167,0.60401,0.835069};
   std::array<Double_t,4> leglimits_4 = {0.484962,0.142361,0.803258,0.369792};
+  std::array<Double_t,4> leglimits_5 = {0.484962,0.128472,0.803258,0.373264};
+
+  std::vector<Color_t> singlesyscolors = {kCyan-6,kOrange-3,kAzure+7,kMagenta-6};
+  std::vector<TString> shortsyslegentry = {"JES","#varepsilon_{trk}","#varepsilon_{b}","#sigma_{Z+jets}"};
 
   for(Int_t i = 0; i < cat.size(); ++i){
     Chi2CL2D(infiles,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",xsec_s1,xsec,ntot,lumi,leglimits_2,"PTF of L vs Subl Small Jet",cat.at(i) + "PTF1S_PTF2S" + "_LD", outdir);
     Chi2CL2Dsys(infiles,f_sys,systag,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",xsec_s2,xsec,ntot,lumi,leglimits_4,"PTF of L vs Subl Small Jet",cat.at(i) + "PTF1S_PTF2S" + "_LD",outdir);
+    Chi2CL2Dsinglesys(infiles,f_sys,systag,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",xsec_s2,xsec,ntot,lumi,leglimits_5,"PTF of L vs Subl Small Jet",cat.at(i) + "PTF1S_PTF2S" + "_LD",outdir,singlesyscolors,shortsyslegentry);
   }
-*/
+
 
 }//end MergeHistos
