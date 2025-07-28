@@ -18,6 +18,7 @@ Description:
 - Merging of nominal histograms PTF1S_PTF2S.
 - Calculation of Stat-only, Stat + Single Sys and Stat + Sys 95% CL limits on xsec_sig.
 - Combination of 95% CL limits on xsec_sig from A and B categories (Stat-only, Stat + Single Sys and Stat + Sys).
+- Plots to display nominal and varied efficiency and JES formulae.
 
 Pythia8 card file:
 Obtained through
@@ -58,6 +59,7 @@ Condor output files:
 Analysis files:
 /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250726_Task28/Chi2_MergeHistos.C
 /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250726_Task28/CombineCL.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250726_Task28/SysFormulae.C
 
 
 ***
@@ -102,3 +104,8 @@ PTF1S_PTF2S_Chi2LD.pdf : Prompt Track Fraction of leading vs subleading small je
 CombinedCLstat.pdf : Chi2 vs xsec_signal from the combination of the same graph from Prompt Track Fraction of leading vs subleading small jet (Low definition bins) in both A, B categories (Stat only)
 CombinedCLstatsys.pdf : Chi2 vs xsec_signal from the combination of the same graph from Prompt Track Fraction of leading vs subleading small jet (Low definition bins) in both A, B categories (Stat+Sys)
 CombinedCLstatsinglesys.pdf : Chi2 vs xsec_signal from the combination of the same graph from Prompt Track Fraction of leading vs subleading small jet (Low definition bins) in both A, B categories (Stat+SingleSys+Sys)
+btageff.pdf : b-tagging efficiency formula
+JESpt.pdf : Jet Energy Scale formula (function of pt)
+JESeta.pdf : Jet Energy Scale formula (function of eta)
+etrknom.pdf : charged hadron tracking nominal efficiency
+etrksys.pdf : charged hadron tracking varied efficiency (1sigma sys)
