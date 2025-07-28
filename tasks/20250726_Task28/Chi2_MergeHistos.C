@@ -1243,8 +1243,8 @@ void Chi2_MergeHistos()
     // Histos for Chi2 calculation
     DrawHistos(area,infiles,"Chi2" + cat.at(i) + "Invariant_mass_of_leading_and_subleading_small_jets",weights,colors,"m_{jj} [GeV/c^{2}]","#events",leglimits_1,"m_{jj} of first 2 Small Jets",legentry,cat.at(i) + "InvMass_small" + "_Chi2",sampledir);
     DrawHistos2D(area,infiles,"Chi2HD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2HD",sampledir);
-    DrawHistos2D(area,infiles,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2LD",sampledir);
     */
+    DrawHistos2D(area,infiles,"Chi2LD" + cat.at(i) + "PTF1small_vs_PTF2small",weights,"PTF of Leading Small Jet","PTF of Subleading Small Jet","# events",leglimits2D_1,"Prompt Track Fraction of Leading vs Subleading Small Jet",legentry,cat.at(i) + "PTF1S_PTF2S" + "_Chi2LD",sampledir);
 
     // Histos of 1sigma systematics
     for(Int_t j = 0; j < systag.size(); ++j){

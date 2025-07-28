@@ -1,0 +1,104 @@
+Author: Giulia Cossutti
+Date: 26th July 2025
+Task: Task28
+
+Run obtained with ht-condor
+condor_submit file.sub
+condor_q
+condor_transfer_data ProcessID
+
+Ht-condor files:
+- In /gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250717_Task27/
+500K_*.sh
+500K_*.sub
+5M_*.sh
+5M_*.sub
+
+Description:
+- Merging of nominal histograms PTF1S_PTF2S.
+- Calculation of Stat-only, Stat + Single Sys and Stat + Sys 95% CL limits on xsec_sig.
+- Combination of 95% CL limits on xsec_sig from A and B categories (Stat-only, Stat + Single Sys and Stat + Sys).
+
+Pythia8 card file:
+Obtained through
+makepythia8delphescards.sh
+in
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250717_Task27/
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_signal_EJ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_q_pTHatMin.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_Zjets_g_pTHatMin.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_ZZ.cmnd
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/pythia8_cards/condor_bkg_HZ_SM.cmnd
+as 
+/gfsvol01/atlas/giuliac/condor/20250717_Task27/pythia8_cards/*
+
+Delphes card file:
+Obtained through
+makepythia8delphescards.sh
+in
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250717_Task27/
+from
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact.tcl
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact_JES.tcl
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact_etrk.tcl
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/delphes_cards/condor_delphes_card_ATLAS_Reclustering_Unique_Compact_eb.tcl
+as
+/gfsvol01/atlas/giuliac/condor/20250717_Task27/delphes_cards/*
+
+Data file:
+/eos/infnts/atlas/giuliac/condor/20250717_Task27/root_outputs/*.root
+
+Log file:
+/eos/infnts/atlas/giuliac/condor/20250717_Task27/log_outputs/*.log
+
+Condor output files:
+/eos/infnts/atlas/giuliac/condor/20250717_Task27/condor_out/*.out (.log, .err)
+
+Analysis files:
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250726_Task28/Chi2_MergeHistos.C
+/gfsvol01/atlas/giuliac/HiddenValley_Higgs/tasks/20250726_Task28/CombineCL.C
+
+
+***
+Files from the various samples are distinguished by a tag: signal_EJ, bkg_Zjets_q, bkg_Zjets_g, bkg_ZZ, bkg_HZ_SM
+'''
+If they contain:
+_JES : sample with Jet Energy Scale lower by 4%
+_etrk : sample with lowered track reconstruction efficiency
+_eb : sample with lowered b-tagging efficiency
+_xsec : systematic with lowered background production
+'''
+Two series of 1D plots were made:
+*.pdf : stack of backgrounds + overlapped signal
+*_stack.pdf : stack of backgrounds and signal
+'''
+If they contain:
+_sample0 : signal
+_sample1 : bkg_HZ_SM
+_sample2 : bkg_ZZ
+_sample3 : bkg_Zjets_g
+_sample4 : bkg_Zjets_q
+area_ : produced by MergeHistosArea.C, Signal area = sum of bkgs areas
+CL_ : produced by Chi2_MergeHistos.C, Chi2 vs xsec_signal
+sysCL_ : produced by Chi2_MergeHistos.C, Chi2 vs xsec_signal, with systematics
+singlesysCL_ : produced by Chi2_MergeHistos.C, Chi2 vs xsec_signal, with single systematics
+***
+
+Plot files:
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250718_Task27/*.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250726_Task28/*.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250726_Task28/MergedHistos.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250718_Task27/sys.root
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250726_Task28/*.pdf
+
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250726_Task28/CL_graphs.root
+produced with histos and graphs taken by 
+/gfsvol01/atlas/giuliac/plots_and_outputs/20250726_Task28/area_MergedHistos.root
+
+
+Plots:
+PTF1S_PTF2S_Chi2LD.pdf : Prompt Track Fraction of leading vs subleading small jet (Low definition bins)
+CombinedCLstat.pdf : Chi2 vs xsec_signal from the combination of the same graph from Prompt Track Fraction of leading vs subleading small jet (Low definition bins) in both A, B categories (Stat only)
+CombinedCLstatsys.pdf : Chi2 vs xsec_signal from the combination of the same graph from Prompt Track Fraction of leading vs subleading small jet (Low definition bins) in both A, B categories (Stat+Sys)
+CombinedCLstatsinglesys.pdf : Chi2 vs xsec_signal from the combination of the same graph from Prompt Track Fraction of leading vs subleading small jet (Low definition bins) in both A, B categories (Stat+SingleSys+Sys)
