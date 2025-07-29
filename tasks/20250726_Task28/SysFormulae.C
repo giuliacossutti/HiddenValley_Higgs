@@ -101,9 +101,9 @@ void SysFormulae()
   btag_nom->GetXaxis()->SetTitle("p_{T} [GeV/c]");
 
   // Legend
-  std::array<Double_t,4> leglimits = {0.299499,0.616319,0.799499,0.847222};
+  std::array<Double_t,4> leglimitsb = {0.258145,0.614583,0.758145,0.845486};
 
-  TLegend* legend = new TLegend(leglimits[0],leglimits[1],leglimits[2],leglimits[3]);
+  TLegend* legend = new TLegend(leglimitsb[0],leglimitsb[1],leglimitsb[2],leglimitsb[3]);
 
   TString head;
   head = TString::Format("b-tagging Efficiency");
@@ -113,7 +113,9 @@ void SysFormulae()
 
   // Add the right entry to the legend
   legend->AddEntry(btag_nom,"Nominal");
-  legend->AddEntry(btag_sys,"1#sigma Systematic Deviation");
+  //legend->AddEntry(btag_sys,"-1#sigma Systematic Deviation");
+  legend->AddEntry(btag_sys,"-1#sigma Systematic Deviation, #scale[0.8]{Table 5 of}");
+  legend->AddEntry((TObject*)0, "#scale[0.8]{Eur. Phys. J. C, 2019, vol. 79, n. 11, p. 970}", "");
   legend->Draw();
 
   c1->SaveAs(outdir + "btageff.pdf");
@@ -157,6 +159,7 @@ void SysFormulae()
   JES_nom_pt->GetYaxis()->SetRangeUser(0.95,1.25);
 
   // Legend
+  std::array<Double_t,4> leglimits = {0.299499,0.616319,0.799499,0.847222};
   TLegend* legendjp = new TLegend(leglimits[0],leglimits[1],leglimits[2],leglimits[3]);
 
   head = TString::Format("Jet Energy Scale Formula, #eta = %.1f", eta);
@@ -166,7 +169,7 @@ void SysFormulae()
 
   // Add the right entry to the legend
   legendjp->AddEntry(JES_nom_pt,"Nominal");
-  legendjp->AddEntry(JES_sys_pt,"1#sigma Systematic Deviation");
+  legendjp->AddEntry(JES_sys_pt,"-1#sigma Systematic Deviation");
   legendjp->Draw();
 
   c2->SaveAs(outdir + "JESpt.pdf");
@@ -196,7 +199,7 @@ void SysFormulae()
 
   // Add the right entry to the legend
   legendje->AddEntry(JES_nom_eta,"Nominal");
-  legendje->AddEntry(JES_sys_eta,"1#sigma Systematic Deviation");
+  legendje->AddEntry(JES_sys_eta,"-1#sigma Systematic Deviation");
   legendje->Draw();
 
   c3->SaveAs(outdir + "JESeta.pdf");
@@ -304,7 +307,7 @@ void SysFormulae()
   CustomizeLeg(legendts);
 
   // Add the right entry to the legend
-  legendts->AddEntry(etrk_sys,"1#sigma Systematic Deviation");
+  legendts->AddEntry(etrk_sys,"-1#sigma Systematic Deviation");
   legendts->Draw();
 
   c5->SaveAs(outdir + "etrksys.pdf");
